@@ -1,0 +1,182 @@
+{
+	"mc": {
+		"weizhu": {
+			"frames": [{
+				"y": -34,
+				"res": "Sprite_0",
+				"duration": 1,
+				"x": -31
+			}, {
+				"y": -34,
+				"res": "Sprite_1",
+				"duration": 1,
+				"x": -31
+			}, {
+				"y": -34,
+				"res": "Sprite_2",
+				"duration": 1,
+				"x": -31
+			}, {
+				"y": -43,
+				"res": "Sprite_3",
+				"duration": 1,
+				"x": -32
+			}, {
+				"y": -35,
+				"res": "Sprite_4",
+				"duration": 1,
+				"x": -30
+			}, {
+				"y": -35,
+				"res": "Sprite_5",
+				"duration": 1,
+				"x": -30
+			}, {
+				"y": -35,
+				"res": "Sprite_6",
+				"duration": 1,
+				"x": -30
+			}, {
+				"y": -45,
+				"res": "Sprite_7",
+				"duration": 1,
+				"x": -28
+			}, {
+				"y": -45,
+				"res": "Sprite_8",
+				"duration": 1,
+				"x": -28
+			}, {
+				"y": -43,
+				"res": "Sprite_9",
+				"duration": 1,
+				"x": -32
+			}, {
+				"y": -43,
+				"res": "Sprite_10",
+				"duration": 1,
+				"x": -32
+			}, {
+				"y": -45,
+				"res": "Sprite_11",
+				"duration": 1,
+				"x": -28
+			}, {
+				"y": -43,
+				"res": "Sprite_12",
+				"duration": 1,
+				"x": -31
+			}, {
+				"y": -43,
+				"res": "Sprite_13",
+				"duration": 1,
+				"x": -31
+			}, {
+				"y": -43,
+				"res": "Sprite_14",
+				"duration": 1,
+				"x": -31
+			}],
+			"labels": [{
+				"end": 15,
+				"frame": 1,
+				"name": "Sprite"
+			}],
+			"frameRate": 15,
+			"events": []
+		}
+	},
+	"file": "weizhu_tex.png",
+	"res": {
+		"Sprite_6": {
+			"x": 129,
+			"y": 177,
+			"w": 60,
+			"h": 70
+		},
+		"Sprite_10": {
+			"x": 1,
+			"y": 1,
+			"w": 64,
+			"h": 86
+		},
+		"Sprite_2": {
+			"x": 1,
+			"y": 177,
+			"w": 62,
+			"h": 68
+		},
+		"Sprite_1": {
+			"x": 65,
+			"y": 177,
+			"w": 62,
+			"h": 68
+		},
+		"Sprite_8": {
+			"x": 195,
+			"y": 89,
+			"w": 56,
+			"h": 90
+		},
+		"Sprite_11": {
+			"x": 311,
+			"y": 1,
+			"w": 56,
+			"h": 90
+		},
+		"Sprite_3": {
+			"x": 1,
+			"y": 89,
+			"w": 64,
+			"h": 86
+		},
+		"Sprite_5": {
+			"x": 253,
+			"y": 181,
+			"w": 60,
+			"h": 70
+		},
+		"Sprite_7": {
+			"x": 253,
+			"y": 89,
+			"w": 56,
+			"h": 90
+		},
+		"Sprite_9": {
+			"x": 67,
+			"y": 1,
+			"w": 64,
+			"h": 86
+		},
+		"Sprite_14": {
+			"x": 67,
+			"y": 89,
+			"w": 62,
+			"h": 86
+		},
+		"Sprite_0": {
+			"x": 197,
+			"y": 1,
+			"w": 62,
+			"h": 68
+		},
+		"Sprite_12": {
+			"x": 131,
+			"y": 89,
+			"w": 62,
+			"h": 86
+		},
+		"Sprite_4": {
+			"x": 191,
+			"y": 181,
+			"w": 60,
+			"h": 70
+		},
+		"Sprite_13": {
+			"x": 133,
+			"y": 1,
+			"w": 62,
+			"h": 86
+		}
+	}
+}

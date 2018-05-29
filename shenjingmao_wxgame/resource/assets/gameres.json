@@ -1,0 +1,12 @@
+{"file":"gameres.png","frames":{
+"pot2":{"x":933,"y":1,"w":45,"h":45,"offX":0,"offY":0,"sourceW":45,"sourceH":45},
+"replay":{"x":643,"y":342,"w":200,"h":103,"offX":0,"offY":0,"sourceW":200,"sourceH":103},
+"shareBTN":{"x":643,"y":237,"w":200,"h":103,"offX":0,"offY":0,"sourceW":200,"sourceH":103},
+"txt":{"x":980,"y":1,"w":5,"h":5,"offX":0,"offY":0,"sourceW":364,"sourceH":17},
+"victory":{"x":402,"y":1502,"w":448,"h":338,"offX":0,"offY":0,"sourceW":448,"sourceH":338},
+"arron":{"x":643,"y":1,"w":241,"h":234,"offX":1,"offY":0,"sourceW":244,"sourceH":244},
+"bg":{"x":1,"y":1,"w":640,"h":1136,"offX":0,"offY":0,"sourceW":640,"sourceH":1136},
+"btn_start":{"x":1,"y":1139,"w":399,"h":567,"offX":1,"offY":0,"sourceW":400,"sourceH":588},
+"failed":{"x":402,"y":1139,"w":448,"h":361,"offX":0,"offY":0,"sourceW":448,"sourceH":361},
+"more":{"x":1,"y":1842,"w":456,"h":79,"offX":14,"offY":3,"sourceW":480,"sourceH":82},
+"pot1":{"x":886,"y":1,"w":45,"h":45,"offX":0,"offY":0,"sourceW":45,"sourceH":45}}}
