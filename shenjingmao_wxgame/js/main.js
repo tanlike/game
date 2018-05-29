@@ -594,6 +594,7 @@ var GameOverPanelS = (function (_super) {
     __extends(GameOverPanelS, _super);
     function GameOverPanelS(textures) {
         var _this = _super.call(this) || this;
+        _this.step = 0;
         var gameOverPanelS = new egret.Bitmap();
         gameOverPanelS.texture = textures.getTexture("victory");
         _this.addChild(gameOverPanelS);
@@ -605,13 +606,12 @@ var GameOverPanelS = (function (_super) {
         return _this;
     }
     GameOverPanelS.prototype.addText = function () {
-        var step = DataManage.stepNum;
         this.step_textfield = new egret.TextField();
         this.step_textfield.textColor = 0xff0000;
         this.step_textfield.width = 400;
         this.step_textfield.size = 22;
         this.step_textfield.textAlign = egret.HorizontalAlign.CENTER;
-        this.step_textfield.text = "您用" + step + "步抓住了神经猫";
+        this.step_textfield.text = "您用" + this.step + "步抓住了神经猫";
         this.step_textfield.x = 20;
         this.step_textfield.y = 150;
         this.addChild(this.step_textfield);
@@ -622,7 +622,7 @@ var GameOverPanelS = (function (_super) {
         this.rank_textfield.textAlign = egret.HorizontalAlign.CENTER;
         this.rank_textfield.strokeColor = 0x000000;
         this.rank_textfield.stroke = 2;
-        var rank = (100 - step) * 10;
+        var rank = (100 - this.step) * 10;
         this.rank_textfield.text = "神经全国排名" + rank + "位";
         this.rank_textfield.x = 20;
         this.rank_textfield.y = 190;
@@ -632,7 +632,7 @@ var GameOverPanelS = (function (_super) {
         this.beat_textfield.width = 400;
         this.beat_textfield.size = 22;
         this.beat_textfield.textAlign = egret.HorizontalAlign.CENTER;
-        var beatNum = 100 - step;
+        var beatNum = 100 - this.step;
         this.beat_textfield.text = "击败了精神病院" + beatNum + "%的精神病患者";
         this.beat_textfield.x = 20;
         this.beat_textfield.y = 230;
@@ -702,6 +702,7 @@ var ViewManage = (function (_super) {
         _this._backGroundPanel = new BackGroundPanel(root, textures);
         _this._StartGamePanel = new StartGamePanel(textures);
         _this._StartGamePanel.addEventListener(egret.TouchEvent.TOUCH_TAP, _this.OnStartGameClick, _this);
+        _this._GameOverPanelS = new GameOverPanelS(textures);
         _this._GameOverPanelF = new GameOverPanelF(textures);
         _this._GameOverButtonPanel = new GameOverButtonPanel(textures);
         _this._GameOverButtonPanel._reStartBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, _this.OnReStartClick, _this);
@@ -789,7 +790,7 @@ var ViewManage = (function (_super) {
     //游戏结束
     ViewManage.prototype.showGameOverView = function (isS) {
         if (isS) {
-            this._GameOverPanelS = new GameOverPanelS(RES.getRes("gameres_json"));
+            this._GameOverPanelS.step = DataManage.stepNum;
             this._rootView.addChild(this._GameOverPanelS);
         }
         else {
