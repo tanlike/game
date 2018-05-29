@@ -19,6 +19,7 @@ class ViewManage extends egret.EventDispatcher{
         this._StartGamePanel = new StartGamePanel(textures);
         this._StartGamePanel.addEventListener(egret.TouchEvent.TOUCH_TAP,this.OnStartGameClick,this);
 
+        this._GameOverPanelS = new GameOverPanelS(textures);
         this._GameOverPanelF = new GameOverPanelF(textures);
 
         this._GameOverButtonPanel = new GameOverButtonPanel(textures);
@@ -48,11 +49,11 @@ class ViewManage extends egret.EventDispatcher{
     }
     //重新开始游戏点击
     private OnReStartClick(){
-        if(this._GameOverPanelS.parent){
-            this._rootView.removeChild(this._GameOverPanelS);
+        if(this._GameOverPanelF.parent){
+            this._rootView.removeChild(this._GameOverPanelF);
         }
         else{
-            this._rootView.removeChild(this._GameOverPanelF);
+            this._rootView.removeChild(this._GameOverPanelS);
         }
         this._rootView.removeChild(this._GameOverButtonPanel);
         var evt : GameEvent = new GameEvent(GameEvent.START_GAME);
@@ -111,7 +112,7 @@ class ViewManage extends egret.EventDispatcher{
     //游戏结束
     public showGameOverView(isS : boolean){
         if(isS){
-            this._GameOverPanelS = new GameOverPanelS(RES.getRes("gameres_json"));
+            this._GameOverPanelS.step = DataManage.stepNum;
             this._rootView.addChild(this._GameOverPanelS);
         }
         else{

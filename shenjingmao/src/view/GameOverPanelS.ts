@@ -5,6 +5,8 @@ class GameOverPanelS extends egret.Sprite{
     private beat_textfield : egret.TextField;
     private title_textfield : egret.TextField;
 
+    public step : number = 0;
+
     public constructor(textures : egret.SpriteSheet){
         super();
 
@@ -21,13 +23,12 @@ class GameOverPanelS extends egret.Sprite{
     }
 
     public addText() : void{
-        var step : number = DataManage.stepNum;
         this.step_textfield = new egret.TextField();
         this.step_textfield.textColor = 0xff0000;
         this.step_textfield.width = 400;
         this.step_textfield.size = 22;
         this.step_textfield.textAlign = egret.HorizontalAlign.CENTER;
-        this.step_textfield.text = "您用" + step + "步抓住了神经猫";
+        this.step_textfield.text = "您用" + this.step + "步抓住了神经猫";
         this.step_textfield.x = 20;
         this.step_textfield.y = 150;
         this.addChild(this.step_textfield);
@@ -39,7 +40,7 @@ class GameOverPanelS extends egret.Sprite{
         this.rank_textfield.textAlign = egret.HorizontalAlign.CENTER;
         this.rank_textfield.strokeColor = 0x000000;
         this.rank_textfield.stroke = 2;
-        var rank : number = (100 - step) * 10;
+        var rank : number = (100 - this.step) * 10;
         this.rank_textfield.text = "神经全国排名" + rank + "位";
         this.rank_textfield.x = 20;
         this.rank_textfield.y = 190;
@@ -50,7 +51,7 @@ class GameOverPanelS extends egret.Sprite{
         this.beat_textfield.width = 400;
         this.beat_textfield.size = 22;
         this.beat_textfield.textAlign = egret.HorizontalAlign.CENTER;
-        var beatNum : number = 100 - step
+        var beatNum : number = 100 - this.step;
         this.beat_textfield.text = "击败了精神病院" + beatNum + "%的精神病患者";
         this.beat_textfield.x = 20;
         this.beat_textfield.y = 230;
