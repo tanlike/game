@@ -45,11 +45,13 @@ class Tile extends egret.Sprite{
     }
     //点击后切换为不可走
     public onClick(){
-        if(this._isOpen){
-            var evt : GameEvent = new GameEvent(GameEvent.OPEN_TILE);
-            evt.open_tile_index  = this.index;
-            this.dispatchEvent(evt);
+        if(!DataManage.instance()._isS){
+            if(this._isOpen){
+                var evt : GameEvent = new GameEvent(GameEvent.OPEN_TILE);
+                evt.open_tile_index  = this.index;
+                this.dispatchEvent(evt);
+            }
+            this.close();
         }
-        this.close();
     }
 }

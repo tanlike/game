@@ -49,12 +49,14 @@ var Tile = (function (_super) {
     };
     //点击后切换为不可走
     Tile.prototype.onClick = function () {
-        if (this._isOpen) {
-            var evt = new GameEvent(GameEvent.OPEN_TILE);
-            evt.open_tile_index = this.index;
-            this.dispatchEvent(evt);
+        if (!DataManage.instance()._isS) {
+            if (this._isOpen) {
+                var evt = new GameEvent(GameEvent.OPEN_TILE);
+                evt.open_tile_index = this.index;
+                this.dispatchEvent(evt);
+            }
+            this.close();
         }
-        this.close();
     };
     return Tile;
 }(egret.Sprite));

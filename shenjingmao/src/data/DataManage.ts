@@ -1,7 +1,7 @@
 class DataManage{
 
     private static _isInit : boolean = false;       //只允许一次初始化
-    public stepNum : number = 0;                    //计录步数
+    public static stepNum : number = 0;                    //计录步数
     private catDefaultIndex : number = 40;           //神经猫的位置
     public _isS : boolean = false;                  //是否赢了
     public static catIsAction1mc : boolean = true;  //神经猫是否播放动作1
@@ -35,7 +35,9 @@ class DataManage{
     }
     //游戏开始时，初始化游戏数据
     public init_tileDatas(){
+        DataManage.stepNum = 0;
         DataManage.catIsAction1mc = true;
+        this._isS = false;
         for(var i:number = 0;i < DataManage.tileNum;i++){
             this._tileDatas[i] = true;
         }

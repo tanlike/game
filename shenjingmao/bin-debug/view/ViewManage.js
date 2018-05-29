@@ -18,7 +18,6 @@ var ViewManage = (function (_super) {
         _this._backGroundPanel = new BackGroundPanel(root, textures);
         _this._StartGamePanel = new StartGamePanel(textures);
         _this._StartGamePanel.addEventListener(egret.TouchEvent.TOUCH_TAP, _this.OnStartGameClick, _this);
-        _this._GameOverPanelS = new GameOverPanelS(textures);
         _this._GameOverPanelF = new GameOverPanelF(textures);
         _this._GameOverButtonPanel = new GameOverButtonPanel(textures);
         _this._GameOverButtonPanel._reStartBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, _this.OnReStartClick, _this);
@@ -28,11 +27,13 @@ var ViewManage = (function (_super) {
     ViewManage.prototype.createCat = function () {
         this._cat = new Cat();
     };
+    //显示开始界面
     ViewManage.prototype.showStartGameView = function () {
         if (this._StartGamePanel) {
             this._rootView.addChild(this._StartGamePanel);
         }
     };
+    //开始游戏按钮点击
     ViewManage.prototype.OnStartGameClick = function () {
         this._rootView.removeChild(this._StartGamePanel);
         this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.OnStartGameClick, this);
@@ -41,6 +42,7 @@ var ViewManage = (function (_super) {
         var evt = new GameEvent(GameEvent.START_GAME);
         this.dispatchEvent(evt);
     };
+    //重新开始游戏点击
     ViewManage.prototype.OnReStartClick = function () {
         if (this._GameOverPanelS.parent) {
             this._rootView.removeChild(this._GameOverPanelS);
@@ -52,6 +54,7 @@ var ViewManage = (function (_super) {
         var evt = new GameEvent(GameEvent.START_GAME);
         this.dispatchEvent(evt);
     };
+    //创建地图圆点
     ViewManage.prototype.createTiles = function () {
         for (var i = 0; i < DataManage.tileNum; i++) {
             var tile = new Tile(this._textures);
@@ -61,9 +64,11 @@ var ViewManage = (function (_super) {
         }
         this.showTiles();
     };
+    //VIEWmanage面板侦听事件的发送
     ViewManage.prototype.OnOpenTile = function (evt) {
         this.dispatchEvent(evt);
     };
+    //显示地图圆点
     ViewManage.prototype.showTiles = function () {
         for (var i = 0; i < DataManage.tileNum; i++) {
             var p = Util.getPointXYByIndex(this._tiles[i].index);
@@ -72,6 +77,7 @@ var ViewManage = (function (_super) {
             this._rootView.addChild(this._tiles[i]);
         }
     };
+    //更新地图
     ViewManage.prototype.updateAll = function () {
         var len = DataManage.tileNum;
         for (var i = 0; i < len; i++) {
@@ -88,6 +94,7 @@ var ViewManage = (function (_super) {
         this._cat.init();
         this.update();
     };
+    //更新猫的显示
     ViewManage.prototype.update = function () {
         var index = DataManage.instance().getCatIndex();
         var p = Util.getPointXYByIndex(index);
@@ -95,8 +102,10 @@ var ViewManage = (function (_super) {
         this._cat.y = p.y;
         this._cat.isAction1 = DataManage.catIsAction1mc;
     };
+    //游戏结束
     ViewManage.prototype.showGameOverView = function (isS) {
         if (isS) {
+            this._GameOverPanelS = new GameOverPanelS(RES.getRes("gameres_json"));
             this._rootView.addChild(this._GameOverPanelS);
         }
         else {

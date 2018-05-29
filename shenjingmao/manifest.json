@@ -8,14 +8,14 @@
 		"libs/modules/promise/promise.js"
 	],
 	"game": [
+		"bin-debug/LoadingUI.js",
 		"bin-debug/element/Tile.js",
-		"bin-debug/GameEvent.js",
 		"bin-debug/Main.js",
 		"bin-debug/data/CatAI.js",
 		"bin-debug/data/CatNode.js",
 		"bin-debug/data/DataManage.js",
 		"bin-debug/element/Cat.js",
-		"bin-debug/LoadingUI.js",
+		"bin-debug/GameEvent.js",
 		"bin-debug/view/BackGroundPanel.js",
 		"bin-debug/view/GameOverButtonPanel.js",
 		"bin-debug/view/GameOverPanelF.js",

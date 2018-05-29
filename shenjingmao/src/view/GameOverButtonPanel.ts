@@ -1,6 +1,7 @@
 class GameOverButtonPanel extends egret.Sprite{
 
     public _reStartBtn : egret.Sprite;
+
     public constructor(textures : egret.SpriteSheet){
         super();
 
@@ -13,7 +14,10 @@ class GameOverButtonPanel extends egret.Sprite{
         this._reStartBtn.touchEnabled = true;
         this.addChild(this._reStartBtn);
 
-        this.x = (egret.MainContext.instance.stage.stageWidth - this.width) / 2;
-        this.y = (egret.MainContext.instance.stage.stageHeight - this.height) / 2;
+        this.x = (egret.MainContext.instance.stage.stageWidth - this.width) / 2 + 120;
+        this.y = (egret.MainContext.instance.stage.stageHeight - this.height) / 2 + 210;
+
     }
+
+    
 }

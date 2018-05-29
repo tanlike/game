@@ -58,7 +58,7 @@ class Main extends egret.DisplayObjectContainer {
     }
     //点击tile后关闭tile，如果神经猫无处可走，即游戏结束
     private openTile(evt : GameEvent){
-        DataManage.instance().stepNum++;
+        DataManage.stepNum++;
         DataManage.instance().closeTileByIndex(evt.open_tile_index);
         var rel : boolean = DataManage.instance().isHaveNextPointByCat();
         if(rel){

@@ -16,8 +16,8 @@ var Util = (function () {
         if (Math.floor(index / 9) % 2 == 1) {
             space = 25;
         }
-        point.x = 120 + 45 * (index % 9) + space;
-        point.y = 400 + 45 * Math.floor(index / 9);
+        point.x = 150 + 45 * (index % 9) + space;
+        point.y = 450 + 45 * Math.floor(index / 9);
         return point;
     };
     Util.GetIndexByPoint = function (p) {

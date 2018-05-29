@@ -20,8 +20,8 @@ var GameOverButtonPanel = (function (_super) {
         _this._reStartBtn.addChild(bitmap);
         _this._reStartBtn.touchEnabled = true;
         _this.addChild(_this._reStartBtn);
-        _this.x = (egret.MainContext.instance.stage.stageWidth - _this.width) / 2;
-        _this.y = (egret.MainContext.instance.stage.stageHeight - _this.height) / 2;
+        _this.x = (egret.MainContext.instance.stage.stageWidth - _this.width) / 2 + 120;
+        _this.y = (egret.MainContext.instance.stage.stageHeight - _this.height) / 2 + 210;
         return _this;
     }
     return GameOverButtonPanel;

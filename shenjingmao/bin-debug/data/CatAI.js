@@ -4,12 +4,13 @@ var __reflect = (this && this.__reflect) || function (p, c, t) {
 var CatAI = (function () {
     function CatAI() {
     }
+    //由猫的位置寻找所有的通路达到边缘点
     CatAI.prototype.findPath = function (from) {
-        var currentNodeIndexs = [from]; //中心点集合
+        var currentNodeIndexs = [from]; //通路的中心点集合
         var usedNodeIndexs = []; //使用过点集合
         var currentNodeIndex; //当前点位置
         var round; //周围点集合
-        var len_round = 0;
+        var len_round = 0; //周围可使用点的数量
         var rel = true;
         while (rel) {
             if (currentNodeIndexs.length == 0) {
@@ -26,26 +27,30 @@ var CatAI = (function () {
                     if (this.map[round[i]]._isUsed) {
                         usedNodeIndexs.push(round[i]);
                     }
+                    //中心点周围的点如果被使用或者在中心点集合中则忽略
                     if (usedNodeIndexs.indexOf(round[i]) > -1 || currentNodeIndexs.indexOf(round[i]) > -1) {
                         continue;
                     }
-                    this.map[round[i]].preIndex = currentNodeIndex;
+                    this.map[round[i]].preIndex = currentNodeIndex; //当前位置写入前置位置
                     if (this.isExit(round[i])) {
                         return round[i];
                     }
-                    newIndexs.push(round[i]);
+                    newIndexs.push(round[i]); //找出周围6个点中可用的点放入数组
                 }
-                usedNodeIndexs.push(currentNodeIndex);
+                usedNodeIndexs.push(currentNodeIndex); //当前使用过的点放入使用点集合
             }
-            currentNodeIndexs = newIndexs;
+            currentNodeIndexs = newIndexs; //在周围的6个点中的可用点中继续寻找中心点
         }
     };
+    //寻找下一个移动的点
     CatAI.prototype.findNextPoint = function (catIndex) {
         this.initMap();
         var nextIndex = this.findPath(catIndex);
+        //被围住可走
         if (nextIndex == null) {
             return null;
         }
+        //被围住不可走,游戏结束
         if (nextIndex == -1) {
             return -1;
         }
@@ -62,6 +67,7 @@ var CatAI = (function () {
         }
         return nextIndex;
     };
+    //是否是出口
     CatAI.prototype.isExit = function (index) {
         var p = Util.getPointByIndex(index);
         var row = p.y;
@@ -71,10 +77,12 @@ var CatAI = (function () {
         }
         return false;
     };
+    //随机获取周围的一个点
     CatAI.prototype.getNear = function (_catIndex) {
         var round = this.findRound(_catIndex);
         return round[0];
     };
+    //初始化猫的寻路路径
     CatAI.prototype.initMap = function () {
         if (this.map == null) {
             this.map = [];
@@ -89,6 +97,7 @@ var CatAI = (function () {
             }
         }
     };
+    //返回猫周围6个点的序号
     CatAI.prototype.findRound = function (index) {
         var arr = [];
         var p = Util.getPointByIndex(index);

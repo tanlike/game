@@ -3,7 +3,6 @@ var __reflect = (this && this.__reflect) || function (p, c, t) {
 };
 var DataManage = (function () {
     function DataManage() {
-        this.stepNum = 0; //计录步数
         this.catDefaultIndex = 40; //神经猫的位置
         this._isS = false; //是否赢了
         this._tileDatas = []; //tile是否可走
@@ -29,7 +28,9 @@ var DataManage = (function () {
     };
     //游戏开始时，初始化游戏数据
     DataManage.prototype.init_tileDatas = function () {
+        DataManage.stepNum = 0;
         DataManage.catIsAction1mc = true;
+        this._isS = false;
         for (var i = 0; i < DataManage.tileNum; i++) {
             this._tileDatas[i] = true;
         }
@@ -83,6 +84,7 @@ var DataManage = (function () {
         return true;
     };
     DataManage._isInit = false; //只允许一次初始化
+    DataManage.stepNum = 0; //计录步数
     DataManage.catIsAction1mc = true; //神经猫是否播放动作1
     DataManage.tileNum = 81; //地图总tile
     return DataManage;

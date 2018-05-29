@@ -120,7 +120,7 @@ var Main = (function (_super) {
     };
     //点击tile后关闭tile，如果神经猫无处可走，即游戏结束
     Main.prototype.openTile = function (evt) {
-        DataManage.instance().stepNum++;
+        DataManage.stepNum++;
         DataManage.instance().closeTileByIndex(evt.open_tile_index);
         var rel = DataManage.instance().isHaveNextPointByCat();
         if (rel) {
