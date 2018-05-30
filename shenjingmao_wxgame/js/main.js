@@ -135,12 +135,20 @@ var Main = (function (_super) {
     };
     Main.prototype.runGame = function () {
         return __awaiter(this, void 0, void 0, function () {
+            var userInfo;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.loadResource()];
                     case 1:
                         _a.sent();
                         this.createGameScene();
+                        return [4 /*yield*/, platform.login()];
+                    case 2:
+                        _a.sent();
+                        return [4 /*yield*/, platform.getUserInfo()];
+                    case 3:
+                        userInfo = _a.sent();
+                        console.log(userInfo);
                         return [2 /*return*/];
                 }
             });
@@ -200,6 +208,29 @@ var Main = (function (_super) {
     return Main;
 }(egret.DisplayObjectContainer));
 __reflect(Main.prototype, "Main");
+var DebugPlatform = (function () {
+    function DebugPlatform() {
+    }
+    DebugPlatform.prototype.getUserInfo = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, { nickName: "username" }];
+            });
+        });
+    };
+    DebugPlatform.prototype.login = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/];
+            });
+        });
+    };
+    return DebugPlatform;
+}());
+__reflect(DebugPlatform.prototype, "DebugPlatform", ["Platform"]);
+if (!window.platform) {
+    window.platform = new DebugPlatform();
+}
 var CatAI = (function () {
     function CatAI() {
     }
@@ -387,8 +418,8 @@ var DataManage = (function () {
     };
     //游戏开始时，初始化游戏数据
     DataManage.prototype.init_tileDatas = function () {
-        DataManage.stepNum = 0;
         DataManage.catIsAction1mc = true;
+        DataManage.stepNum = 0;
         this._isS = false;
         for (var i = 0; i < DataManage.tileNum; i++) {
             this._tileDatas[i] = true;
@@ -594,7 +625,6 @@ var GameOverPanelS = (function (_super) {
     __extends(GameOverPanelS, _super);
     function GameOverPanelS(textures) {
         var _this = _super.call(this) || this;
-        _this.step = 0;
         var gameOverPanelS = new egret.Bitmap();
         gameOverPanelS.texture = textures.getTexture("victory");
         _this.addChild(gameOverPanelS);
@@ -611,7 +641,6 @@ var GameOverPanelS = (function (_super) {
         this.step_textfield.width = 400;
         this.step_textfield.size = 22;
         this.step_textfield.textAlign = egret.HorizontalAlign.CENTER;
-        this.step_textfield.text = "您用" + this.step + "步抓住了神经猫";
         this.step_textfield.x = 20;
         this.step_textfield.y = 150;
         this.addChild(this.step_textfield);
@@ -622,8 +651,6 @@ var GameOverPanelS = (function (_super) {
         this.rank_textfield.textAlign = egret.HorizontalAlign.CENTER;
         this.rank_textfield.strokeColor = 0x000000;
         this.rank_textfield.stroke = 2;
-        var rank = (100 - this.step) * 10;
-        this.rank_textfield.text = "神经全国排名" + rank + "位";
         this.rank_textfield.x = 20;
         this.rank_textfield.y = 190;
         this.addChild(this.rank_textfield);
@@ -632,8 +659,6 @@ var GameOverPanelS = (function (_super) {
         this.beat_textfield.width = 400;
         this.beat_textfield.size = 22;
         this.beat_textfield.textAlign = egret.HorizontalAlign.CENTER;
-        var beatNum = 100 - this.step;
-        this.beat_textfield.text = "击败了精神病院" + beatNum + "%的精神病患者";
         this.beat_textfield.x = 20;
         this.beat_textfield.y = 230;
         this.addChild(this.beat_textfield);
@@ -646,6 +671,13 @@ var GameOverPanelS = (function (_super) {
         this.title_textfield.x = 20;
         this.title_textfield.y = 270;
         this.addChild(this.title_textfield);
+    };
+    GameOverPanelS.prototype.updataData = function () {
+        this.step_textfield.text = "您用" + DataManage.stepNum + "步抓住了神经猫";
+        var rank = Math.floor(Math.random() * DataManage.stepNum * 100);
+        this.rank_textfield.text = "神经全国排名" + rank + "位";
+        var beatNum = 100 - DataManage.stepNum;
+        this.beat_textfield.text = "击败了精神病院" + beatNum + "%的精神病患者";
     };
     return GameOverPanelS;
 }(egret.Sprite));
@@ -790,7 +822,7 @@ var ViewManage = (function (_super) {
     //游戏结束
     ViewManage.prototype.showGameOverView = function (isS) {
         if (isS) {
-            this._GameOverPanelS.step = DataManage.stepNum;
+            this._GameOverPanelS.updataData();
             this._rootView.addChild(this._GameOverPanelS);
         }
         else {
