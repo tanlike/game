@@ -112,7 +112,7 @@ class ViewManage extends egret.EventDispatcher{
     //游戏结束
     public showGameOverView(isS : boolean){
         if(isS){
-            this._GameOverPanelS.step = DataManage.stepNum;
+           this._GameOverPanelS.updataData();
             this._rootView.addChild(this._GameOverPanelS);
         }
         else{

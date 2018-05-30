@@ -35,8 +35,8 @@ class DataManage{
     }
     //游戏开始时，初始化游戏数据
     public init_tileDatas(){
-        DataManage.stepNum = 0;
         DataManage.catIsAction1mc = true;
+        DataManage.stepNum = 0;
         this._isS = false;
         for(var i:number = 0;i < DataManage.tileNum;i++){
             this._tileDatas[i] = true;

@@ -1,26 +1,28 @@
-class GameOverPanelS extends egret.Sprite{
-    
-    private step_textfield : egret.TextField;
-    private rank_textfield : egret.TextField;
-    private beat_textfield : egret.TextField;
-    private title_textfield : egret.TextField;
-
-    public constructor(textures : egret.SpriteSheet){
-        super();
-
-        var gameOverPanelS : egret.Bitmap = new egret.Bitmap();
+var __reflect = (this && this.__reflect) || function (p, c, t) {
+    p.__class__ = c, t ? t.push(c) : t = [c], p.__types__ = p.__types__ ? t.concat(p.__types__) : t;
+};
+var __extends = this && this.__extends || function __extends(t, e) { 
+ function r() { 
+ this.constructor = t;
+}
+for (var i in e) e.hasOwnProperty(i) && (t[i] = e[i]);
+r.prototype = e.prototype, t.prototype = new r();
+};
+var GameOverPanelS = (function (_super) {
+    __extends(GameOverPanelS, _super);
+    function GameOverPanelS(textures) {
+        var _this = _super.call(this) || this;
+        var gameOverPanelS = new egret.Bitmap();
         gameOverPanelS.texture = textures.getTexture("victory");
-        this.addChild(gameOverPanelS);
-        this.width = 448;
-        this.height = 338;
-        
-        this.x = (egret.MainContext.instance.stage.stageWidth - this.width) / 2;
-        this.y = (egret.MainContext.instance.stage.stageHeight - this.height) / 2;
-
-        this.addText();
+        _this.addChild(gameOverPanelS);
+        _this.width = 448;
+        _this.height = 338;
+        _this.x = (egret.MainContext.instance.stage.stageWidth - _this.width) / 2;
+        _this.y = (egret.MainContext.instance.stage.stageHeight - _this.height) / 2;
+        _this.addText();
+        return _this;
     }
-
-    public addText(){
+    GameOverPanelS.prototype.addText = function () {
         this.step_textfield = new egret.TextField();
         this.step_textfield.textColor = 0xff0000;
         this.step_textfield.width = 400;
@@ -56,13 +58,15 @@ class GameOverPanelS extends egret.Sprite{
         this.title_textfield.x = 20;
         this.title_textfield.y = 270;
         this.addChild(this.title_textfield);
-    }
-
-    public updataData() : void{
+    };
+    GameOverPanelS.prototype.updataData = function () {
         this.step_textfield.text = "您用" + DataManage.stepNum + "步抓住了神经猫";
-        var rank : number = Math.floor(Math.random() * DataManage.stepNum * 100)
+        var rank = Math.floor(Math.random() * DataManage.stepNum * 100);
         this.rank_textfield.text = "神经全国排名" + rank + "位";
-        var beatNum : number = 100 - DataManage.stepNum;
-        this.beat_textfield.text = "击败了精神病院" + beatNum + "%的精神病患者"; 
-    }
-}
+        var beatNum = 100 - DataManage.stepNum;
+        this.beat_textfield.text = "击败了精神病院" + beatNum + "%的精神病患者";
+    };
+    return GameOverPanelS;
+}(egret.Sprite));
+__reflect(GameOverPanelS.prototype, "GameOverPanelS");
+//# sourceMappingURL=GameOverPanelS.js.map
