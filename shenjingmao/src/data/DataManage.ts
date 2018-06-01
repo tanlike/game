@@ -5,7 +5,8 @@ class DataManage{
     private catDefaultIndex : number = 40;           //神经猫的位置
     public _isS : boolean = false;                  //是否赢了
     public static catIsAction1mc : boolean = true;  //神经猫是否播放动作1
-    private _catAI : CatAI;                         
+    private _catAI : CatAI;          
+    public _isGameOver : boolean = false;          //游戏是否结束               
 
     public constructor(){
         if(!DataManage._isInit){

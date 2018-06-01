@@ -1,6 +1,6 @@
 {
 	"groups":[{
-			"keys":"description_json,gameres_json,weizhu_mc_json,weizhu_tex_png,stay_mc_json,stay_tex_png",
+			"keys":"description_json,gameres_json,weizhu_mc_json,weizhu_tex_png,stay_mc_json,stay_tex_png,timg_jpg",
 			"name":"preload"
 		}],
 	"resources":[
@@ -34,6 +34,11 @@
 			"name":"stay_tex_png",
 			"type":"image",
 			"url":"assets/stay_tex.png"
+		},
+		{
+			"name":"timg_jpg",
+			"type":"image",
+			"url":"assets/timg.jpg"
 		}
 	]
 }

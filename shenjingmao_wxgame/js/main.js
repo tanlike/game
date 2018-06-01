@@ -84,14 +84,15 @@ var Tile = (function (_super) {
     };
     //点击后切换为不可走
     Tile.prototype.onClick = function () {
-        if (!DataManage.instance()._isS) {
-            if (this._isOpen) {
-                var evt = new GameEvent(GameEvent.OPEN_TILE);
-                evt.open_tile_index = this.index;
-                this.dispatchEvent(evt);
-            }
-            this.close();
+        if (DataManage.instance()._isGameOver) {
+            return;
         }
+        if (this._isOpen) {
+            var evt = new GameEvent(GameEvent.OPEN_TILE);
+            evt.open_tile_index = this.index;
+            this.dispatchEvent(evt);
+        }
+        this.close();
     };
     return Tile;
 }(egret.Sprite));
@@ -107,6 +108,7 @@ var GameEvent = (function (_super) {
     }
     GameEvent.OPEN_TILE = "open_tile";
     GameEvent.START_GAME = "start_game";
+    GameEvent.OVER_GAME = 'over_game';
     return GameEvent;
 }(egret.Event));
 __reflect(GameEvent.prototype, "GameEvent");
@@ -185,6 +187,11 @@ var Main = (function (_super) {
         this._viewManage = new ViewManage(this, RES.getRes("gameres_json"));
         this._viewManage.addEventListener(GameEvent.START_GAME, this.startGame, this);
         this._viewManage.addEventListener(GameEvent.OPEN_TILE, this.openTile, this);
+        this.addEventListener(GameEvent.OVER_GAME, this.overGame, this);
+    };
+    Main.prototype.overGame = function () {
+        DataManage.instance()._isGameOver = true;
+        console.log('游戏结束');
     };
     //游戏开始，初始化地图数据，更新界面
     Main.prototype.startGame = function () {
@@ -202,6 +209,9 @@ var Main = (function (_super) {
             this._viewManage.update();
         }
         else {
+            console.log('游戏结束，发送事件');
+            var evt = new GameEvent(GameEvent.OVER_GAME);
+            this.dispatchEvent(evt);
             this._viewManage.showGameOverView(DataManage.instance()._isS);
         }
     };
@@ -395,6 +405,7 @@ var DataManage = (function () {
     function DataManage() {
         this.catDefaultIndex = 40; //神经猫的位置
         this._isS = false; //是否赢了
+        this._isGameOver = false; //游戏是否结束               
         this._tileDatas = []; //tile是否可走
         this._catIndex = this.catDefaultIndex;
         if (!DataManage._isInit) {
@@ -682,6 +693,40 @@ var GameOverPanelS = (function (_super) {
     return GameOverPanelS;
 }(egret.Sprite));
 __reflect(GameOverPanelS.prototype, "GameOverPanelS");
+var GameOverSharePanel = (function (_super) {
+    __extends(GameOverSharePanel, _super);
+    function GameOverSharePanel() {
+        var _this = _super.call(this) || this;
+        _this._shareBtn = new egret.Sprite();
+        _this._shareBtn.width = 93;
+        _this._shareBtn.height = 93;
+        var bitmap = new egret.Bitmap();
+        bitmap.texture = RES.getRes('timg_jpg');
+        _this._shareBtn.addChild(bitmap);
+        _this._shareBtn.touchEnabled = true;
+        _this.addChild(_this._shareBtn);
+        _this._shareBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, _this.OnShare, _this);
+        _this.x = (egret.MainContext.instance.stage.stageWidth - _this.width) / 2 - 120;
+        _this.y = (egret.MainContext.instance.stage.stageHeight - _this.height) / 2 + 210;
+        return _this;
+    }
+    GameOverSharePanel.prototype.OnShare = function () {
+        wx.shareAppMessage({
+            title: '转发标题',
+            imageUrl: 'openDataContext/assets/rankingtitle.png',
+            query: '',
+            success: function (res) {
+                console.log('分享成功', res);
+            },
+            fail: function (err) {
+                console.log('分享失败', err);
+            },
+            complete: function (res) { }
+        });
+    };
+    return GameOverSharePanel;
+}(egret.Sprite));
+__reflect(GameOverSharePanel.prototype, "GameOverSharePanel");
 var StartGamePanel = (function (_super) {
     __extends(StartGamePanel, _super);
     function StartGamePanel(textures) {
@@ -738,6 +783,7 @@ var ViewManage = (function (_super) {
         _this._GameOverPanelF = new GameOverPanelF(textures);
         _this._GameOverButtonPanel = new GameOverButtonPanel(textures);
         _this._GameOverButtonPanel._reStartBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, _this.OnReStartClick, _this);
+        _this._GameOverSharePanel = new GameOverSharePanel();
         _this.showStartGameView();
         return _this;
     }
@@ -761,6 +807,7 @@ var ViewManage = (function (_super) {
     };
     //重新开始游戏点击
     ViewManage.prototype.OnReStartClick = function () {
+        DataManage.instance()._isGameOver = false;
         if (this._GameOverPanelF.parent) {
             this._rootView.removeChild(this._GameOverPanelF);
         }
@@ -768,6 +815,7 @@ var ViewManage = (function (_super) {
             this._rootView.removeChild(this._GameOverPanelS);
         }
         this._rootView.removeChild(this._GameOverButtonPanel);
+        this._rootView.removeChild(this._GameOverSharePanel);
         var evt = new GameEvent(GameEvent.START_GAME);
         this.dispatchEvent(evt);
     };
@@ -829,6 +877,7 @@ var ViewManage = (function (_super) {
             this._rootView.addChild(this._GameOverPanelF);
         }
         this._rootView.addChild(this._GameOverButtonPanel);
+        this._rootView.addChild(this._GameOverSharePanel);
     };
     return ViewManage;
 }(egret.EventDispatcher));

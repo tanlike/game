@@ -50,6 +50,11 @@ class Main extends egret.DisplayObjectContainer {
         this._viewManage = new ViewManage(this,RES.getRes("gameres_json"));
         this._viewManage.addEventListener(GameEvent.START_GAME,this.startGame,this);
         this._viewManage.addEventListener(GameEvent.OPEN_TILE,this.openTile,this);
+        this.addEventListener(GameEvent.OVER_GAME,this.overGame,this);
+    }
+
+    private overGame(){
+        DataManage.instance()._isGameOver = true;
     }
 
     //游戏开始，初始化地图数据，更新界面
@@ -68,6 +73,8 @@ class Main extends egret.DisplayObjectContainer {
             this._viewManage.update();
         }
         else{
+            var evt: GameEvent = new GameEvent(GameEvent.OVER_GAME);
+            this.dispatchEvent(evt);
             this._viewManage.showGameOverView(DataManage.instance()._isS);
         }
     }

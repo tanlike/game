@@ -8,6 +8,7 @@ class ViewManage extends egret.EventDispatcher{
     private _GameOverPanelS : GameOverPanelS;
     private _GameOverPanelF : GameOverPanelF;
     private _GameOverButtonPanel : GameOverButtonPanel;
+    private _GameOverSharePanel : GameOverSharePanel;
 
     public constructor(root : egret.DisplayObjectContainer,textures : egret.SpriteSheet){
         super();
@@ -24,6 +25,8 @@ class ViewManage extends egret.EventDispatcher{
 
         this._GameOverButtonPanel = new GameOverButtonPanel(textures);
         this._GameOverButtonPanel._reStartBtn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.OnReStartClick,this);
+
+        this._GameOverSharePanel = new GameOverSharePanel();
 
         this.showStartGameView();
     }
@@ -49,6 +52,7 @@ class ViewManage extends egret.EventDispatcher{
     }
     //重新开始游戏点击
     private OnReStartClick(){
+        DataManage.instance()._isGameOver = false;
         if(this._GameOverPanelF.parent){
             this._rootView.removeChild(this._GameOverPanelF);
         }
@@ -56,6 +60,7 @@ class ViewManage extends egret.EventDispatcher{
             this._rootView.removeChild(this._GameOverPanelS);
         }
         this._rootView.removeChild(this._GameOverButtonPanel);
+        this._rootView.removeChild(this._GameOverSharePanel);
         var evt : GameEvent = new GameEvent(GameEvent.START_GAME);
         this.dispatchEvent(evt);
     }
@@ -119,5 +124,6 @@ class ViewManage extends egret.EventDispatcher{
             this._rootView.addChild(this._GameOverPanelF);
         }
         this._rootView.addChild(this._GameOverButtonPanel);
+        this._rootView.addChild(this._GameOverSharePanel);
     }
 }
