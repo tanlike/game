@@ -12,25 +12,11 @@ class GameOverSharePanel extends egret.Sprite{
         this._shareBtn.addChild(bitmap);
         this._shareBtn.touchEnabled = true;
         this.addChild(this._shareBtn);
-        this._shareBtn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.OnShare,this);
+        this._shareBtn.addEventListener(egret.TouchEvent.TOUCH_TAP,WxInvoke.instance().onShareGame,this);
 
         this.x = (egret.MainContext.instance.stage.stageWidth - this.width) / 2 - 120;
         this.y = (egret.MainContext.instance.stage.stageHeight - this.height) / 2 + 210;
 
     }
 
-    private OnShare(){
-        wx.shareAppMessage({
-            title: '转发标题',
-            imageUrl: 'openDataContext/assets/rankingtitle.png',
-            query: '',
-            success: (res) => {
-                console.log('分享成功',res);
-            },
-            fail: (err) => {
-                console.log('分享失败',err);
-            },
-            complete: (res) => {}
-        })
-    }
 }

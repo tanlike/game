@@ -9,6 +9,7 @@ class ViewManage extends egret.EventDispatcher{
     private _GameOverPanelF : GameOverPanelF;
     private _GameOverButtonPanel : GameOverButtonPanel;
     private _GameOverSharePanel : GameOverSharePanel;
+    private _RankingListPanel : RankingList;
 
     public constructor(root : egret.DisplayObjectContainer,textures : egret.SpriteSheet){
         super();
@@ -28,6 +29,8 @@ class ViewManage extends egret.EventDispatcher{
 
         this._GameOverSharePanel = new GameOverSharePanel();
 
+        this._RankingListPanel = new RankingList();
+
         this.showStartGameView();
     }
 
@@ -40,9 +43,11 @@ class ViewManage extends egret.EventDispatcher{
         if(this._StartGamePanel){
             this._rootView.addChild(this._StartGamePanel);
         }
+        this._rootView.addChild(this._RankingListPanel);
     }
     //开始游戏按钮点击
     private OnStartGameClick(){
+        this._rootView.removeChild(this._RankingListPanel);
         this._rootView.removeChild(this._StartGamePanel);
         this.removeEventListener(egret.TouchEvent.TOUCH_TAP,this.OnStartGameClick,this);
         this.createTiles();
@@ -117,8 +122,9 @@ class ViewManage extends egret.EventDispatcher{
     //游戏结束
     public showGameOverView(isS : boolean){
         if(isS){
-           this._GameOverPanelS.updataData();
+            this._GameOverPanelS.updataData();
             this._rootView.addChild(this._GameOverPanelS);
+            WxInvoke.instance().uploadScore(DataManage.stepNum);
         }
         else{
             this._rootView.addChild(this._GameOverPanelF);

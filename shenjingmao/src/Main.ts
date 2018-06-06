@@ -51,6 +51,7 @@ class Main extends egret.DisplayObjectContainer {
         this._viewManage.addEventListener(GameEvent.START_GAME,this.startGame,this);
         this._viewManage.addEventListener(GameEvent.OPEN_TILE,this.openTile,this);
         this.addEventListener(GameEvent.OVER_GAME,this.overGame,this);
+        WxInvoke.instance().shareGame();
     }
 
     private overGame(){

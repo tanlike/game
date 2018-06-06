@@ -3,13 +3,6 @@
  * 使用 Canvas2DAPI 在 SharedCanvas 渲染一个排行榜，
  * 并在主域中渲染此 SharedCanvas
  */
-
-
-
-
-
-
-
 /**
  * 资源加载组，将所需资源地址以及引用名进行注册
  * 之后可通过assets.引用名方式进行获取
@@ -40,31 +33,6 @@ preloadAssets();
 var context = sharedCanvas.getContext("2d");
 context.globalCompositeOperation = "source-over";
 
-
-/**
- * 所有头像数据
- * 包括姓名，头像图片，得分
- * 排位序号i会根据parge*perPageNum+i+1进行计算
- */
-let totalGroup = [
-  { key: 1, name: "1111111111", url: assets.icon, scroes: 10000 },
-  { key: 2, name: "2222222222", url: assets.icon, scroes: 9000 },
-  { key: 3, name: "3333333", url: assets.icon, scroes: 8000 },
-  { key: 4, name: "4444444", url: assets.icon, scroes: 7000 },
-  { key: 5, name: "55555555", url: assets.icon, scroes: 6000 },
-  { key: 6, name: "6666666", url: assets.icon, scroes: 5000 },
-  { key: 7, name: "7777777", url: assets.icon, scroes: 4000 },
-  { key: 8, name: "8888888", url: assets.icon, scroes: 3000 },
-  { key: 9, name: "9999999", url: assets.icon, scroes: 2000 },
-  { key: 10, name: "1010101010", url: assets.icon, scroes: 2000 },
-  { key: 11, name: "111111111111", url: assets.icon, scroes: 2000 },
-  { key: 12, name: "121212121212", url: assets.icon, scroes: 2000 },
-  { key: 13, name: "13131313", url: assets.icon, scroes: 2000 },
-  { key: 14, name: "1414141414", url: assets.icon, scroes: 2000 },
-  { key: 15, name: "1515151515", url: assets.icon, scroes: 2000 },
-  { key: 16, name: "1616161616", url: assets.icon, scroes: 2000 },
-];
-
 /**
  * 创建排行榜
  */
@@ -75,13 +43,13 @@ function drawRankPanel() {
   let title = assets.title;
   //根据title的宽高计算一下位置;
   let titleX = offsetX_rankToBorder + (RankWidth - title.width) / 2;
-  let titleY = offsetY_rankToBorder + title.height + 50;
+  let titleY = offsetY_rankToBorder + title.height;
   context.drawImage(title, titleX, titleY);
   //获取当前要渲染的数据组
-  let start = perPageMaxNum * page;
-  currentGroup = totalGroup.slice(start, start + perPageMaxNum);
+  //let start = perPageMaxNum * page;
+  //currentGroup = totalGroup.slice(start, start + perPageMaxNum);
   //创建头像Bar
-  drawRankByGroup(currentGroup);
+ // drawRankByGroup(currentGroup);
   //创建按钮
   drawButton()
 }
@@ -93,10 +61,10 @@ function init() {
   RankWidth = stageWidth * 4 / 5;
   RankHeight = stageHeight * 4 / 5;
   barWidth = RankWidth * 4 / 5;
-  barHeight = RankWidth / perPageMaxNum;
+  barHeight = 100;
   offsetX_rankToBorder = (stageWidth - RankWidth) / 2;
   offsetY_rankToBorder = (stageHeight - RankHeight) / 2;
-  preOffsetY = (RankHeight - barHeight) / (perPageMaxNum + 1);
+  preOffsetY = 120;
 
   startX = offsetX_rankToBorder + offsetX_rankToBorder;
   startY = offsetY_rankToBorder + preOffsetY;
@@ -148,16 +116,23 @@ function drawByData(data, i) {
   //设置字体
   context.font = fontSize + "px Arial";
   //绘制序号
-  context.fillText(data.key + "", x, startY + i * preOffsetY + textOffsetY, textMaxSize);
+  context.fillText(i + 1 + "", x, startY + i * preOffsetY + textOffsetY, textMaxSize);
   x += indexWidth + intervalX;
   //绘制头像
-  context.drawImage(data.url, x, startY + i * preOffsetY + (barHeight - avatarSize) / 2, avatarSize, avatarSize);
+  var avatarUrl = wx.createImage();
+  avatarUrl.src = data.avatarUrl;
+  console.log(avatarUrl.src);
+  avatarUrl.onload = () => {
+    context.drawImage(avatarUrl, startX + avatarSize/2, startY + i * preOffsetY + (barHeight - avatarSize) / 2, avatarSize, avatarSize);
+  };
   x += avatarSize + intervalX;
   //绘制名称
-  context.fillText(data.name + "", x, startY + i * preOffsetY + textOffsetY, textMaxSize);
+  console.log(data.nickname);
+  context.fillText(data.nickname + "", x + 15, startY + i * preOffsetY + textOffsetY, textMaxSize);
   x += textMaxSize + intervalX;
   //绘制分数
-  context.fillText(data.scroes + "", x, startY + i * preOffsetY + textOffsetY, textMaxSize);
+  console.log(data.KVDataList[0].value);
+  context.fillText(data.KVDataList[0].value + "", x - 100, startY + i * preOffsetY + textOffsetY, textMaxSize);
 }
 
 /**
@@ -236,7 +211,7 @@ let currentGroup = [];
  * 每页最多显示个数
  * 建议大于等于4个
  */
-let perPageMaxNum = 5;
+let perPageMaxNum = 2;
 /**
  * 当前页数,默认0为第一页
  */
@@ -303,7 +278,7 @@ let buttonOffset;
 /**
  * 字体大小
  */
-let fontSize = 45;
+let fontSize = 35;
 /**
  * 文本文字Y轴偏移量
  * 可以使文本相对于图片大小居中
@@ -396,4 +371,109 @@ function loop() {
     renderDirty = false;
   }
   requestAnimationFrame(loop);
+}
+
+//接收主域消息
+wx.onMessage(data => {
+  if(data.type == 'uploadscore'){
+    uploadScore(data.key,data.value);
+  }else if(data.type == 'showfriendrankinglist'){
+    showFriendRankingList(data.key);
+  } else if (data.type == 'showgrouprankinglist'){
+    showGroupRankingList(data.key);
+  }
+})
+
+//分数上传
+function uploadScore(key_type,score){
+  wx.getUserCloudStorage({
+    keyList: [key_type],
+    success: (res) => {
+      console.log('获取用户分数',res);
+      console.log(res.KVDataList);
+      if(res.KVDataList.length == 0){
+        console.log('KVDataList初始化');
+        res.KVDataList = [{key: key_type, value: 100 + ''}];
+      }
+      if(res.KVDataList[0].length != 0 && res.KVDataList[0].value > score){
+        wx.setUserCloudStorage({
+          KVDataList: [{ key: key_type, value: score + '' }],
+          success: (res) => {
+            console.log('设置用户分数成功',res);
+          },
+          fail: (err) => {
+            console.log('设置用户分数失败', err);
+          },
+          complete: (res) => {
+            console.log('设置用户分数完成', res);
+          }
+        })
+      }
+    },
+    fail: (err) => {
+      console.log('获取用户分数', err);
+    },
+    complete: (res) => {
+      console.log('获取用户分数', res);
+    }
+  })
+}
+//显示好友排行榜
+function showFriendRankingList(key_type){
+  wx.getFriendCloudStorage({
+    keyList: [key_type],
+    success: (res) => {
+      console.log('获取好友数据成功', res.data.length);
+      res.data.sort((a,b) => {
+        if(a.KVDataList[0].value < b.KVDataList[0].value){
+          console.log('a<b');
+          return -1;
+        }else if(a.KVDataList[0].value > b.KVDataList[0].value){
+          console.log('a>b');
+          return 1;
+        }else{
+          console.log('a=b');
+          return 0;
+        }
+      })
+      var startPage = perPageMaxNum * page;
+      drawRankByGroup(res.data.slice(startPage, startPage + perPageMaxNum));
+    },
+    fail: (err) => {
+      console.log('获取好友数据失败', err);
+    },
+    complete: (res) => {
+      console.log('获取好友数据完成', res);
+    }
+  })
+}
+
+//显示群排行榜
+function showGroupRankingList(key_type,groupticket){
+  wx.getGroupCloudStorage({
+    shareTicket: groupticket,
+    keyList: [key_type],
+    success: (res) => {
+      console.log('获取群数据成功', res.data.length);
+      res.data.sort((a, b) => {
+        if (a.KVDataList[0].value < b.KVDataList[0].value) {
+          console.log('a<b');
+          return -1;
+        } else if (a.KVDataList[0].value > b.KVDataList[0].value) {   
+          console.log('a>b');
+          return 1;
+        } else {
+          console.log('a=b');
+          return 0;
+        }
+      })
+      drawRankByGroup(res.data);
+    },
+    fail: (err) => {
+      console.log('获取群数据失败', err);
+    },
+    complete: (res) => {
+      console.log('获取群数据完成', res);
+    }
+  })
 }

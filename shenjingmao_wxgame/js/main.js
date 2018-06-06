@@ -188,10 +188,10 @@ var Main = (function (_super) {
         this._viewManage.addEventListener(GameEvent.START_GAME, this.startGame, this);
         this._viewManage.addEventListener(GameEvent.OPEN_TILE, this.openTile, this);
         this.addEventListener(GameEvent.OVER_GAME, this.overGame, this);
+        WxInvoke.instance().shareGame();
     };
     Main.prototype.overGame = function () {
         DataManage.instance()._isGameOver = true;
-        console.log('游戏结束');
     };
     //游戏开始，初始化地图数据，更新界面
     Main.prototype.startGame = function () {
@@ -209,7 +209,6 @@ var Main = (function (_super) {
             this._viewManage.update();
         }
         else {
-            console.log('游戏结束，发送事件');
             var evt = new GameEvent(GameEvent.OVER_GAME);
             this.dispatchEvent(evt);
             this._viewManage.showGameOverView(DataManage.instance()._isS);
@@ -438,7 +437,7 @@ var DataManage = (function () {
     };
     //初始化地图障碍
     DataManage.prototype.selectTile = function () {
-        var num = 10 + Math.floor(Math.random() * 10);
+        var num = 60 + Math.floor(Math.random() * 10);
         for (var i = 0; i < num; i++) {
             var index = Math.floor(Math.random() * DataManage.tileNum);
             this._tileDatas[index] = false;
@@ -491,6 +490,78 @@ var DataManage = (function () {
     return DataManage;
 }());
 __reflect(DataManage.prototype, "DataManage");
+var WxInvoke = (function () {
+    function WxInvoke() {
+        this.keyList = ['SCORE']; //key列表
+        this.msgType = ['uploadscore', 'showfriendrankinglist', 'showgrouprankinglist'];
+        if (!WxInvoke.isExist) {
+            throw (new Error("error!"));
+        }
+    }
+    WxInvoke.instance = function () {
+        if (!WxInvoke.isExist) {
+            WxInvoke.isExist = true;
+            this._wxInvoke = new WxInvoke();
+            this.openDataContext = wx.getOpenDataContext();
+        }
+        return WxInvoke._wxInvoke;
+    };
+    //上传分数
+    WxInvoke.prototype.uploadScore = function (value) {
+        console.log('上传分数');
+        WxInvoke.openDataContext.postMessage({
+            type: this.msgType[0],
+            key: this.keyList[0],
+            value: value
+        });
+    };
+    //显示好友排行榜
+    WxInvoke.prototype.showFriendRankingList = function () {
+        WxInvoke.openDataContext.postMessage({
+            type: this.msgType[1],
+            key: this.keyList[0]
+        });
+    };
+    //显示群排行榜
+    WxInvoke.prototype.showGroupRankingList = function () {
+        WxInvoke.openDataContext.postMessage({
+            type: this.msgType[2],
+            key: this.keyList[0]
+        });
+    };
+    //分享转发按钮显示
+    WxInvoke.prototype.shareGame = function () {
+        wx.showShareMenu({
+            withShareTicket: true,
+            success: function (res) {
+                console.log('显示转发按钮成功');
+            },
+            fail: function (res) {
+                console.log('显示转发按钮失败');
+            },
+            complete: function (res) { }
+        });
+        wx.onShareAppMessage(this.onShareGame);
+    };
+    //分享好友
+    WxInvoke.prototype.onShareGame = function () {
+        wx.shareAppMessage({
+            title: '转发标题',
+            imageUrl: 'openDataContext/assets/rankingtitle.png',
+            query: '',
+            success: function (res) {
+                console.log('分享成功', res);
+            },
+            fail: function (err) {
+                console.log('分享失败', err);
+            },
+            complete: function (res) { }
+        });
+    };
+    WxInvoke.isExist = false; //外部不允许创建对象
+    return WxInvoke;
+}());
+__reflect(WxInvoke.prototype, "WxInvoke");
 var Cat = (function (_super) {
     __extends(Cat, _super);
     function Cat() {
@@ -705,28 +776,67 @@ var GameOverSharePanel = (function (_super) {
         _this._shareBtn.addChild(bitmap);
         _this._shareBtn.touchEnabled = true;
         _this.addChild(_this._shareBtn);
-        _this._shareBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, _this.OnShare, _this);
+        _this._shareBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, WxInvoke.instance().onShareGame, _this);
         _this.x = (egret.MainContext.instance.stage.stageWidth - _this.width) / 2 - 120;
         _this.y = (egret.MainContext.instance.stage.stageHeight - _this.height) / 2 + 210;
         return _this;
     }
-    GameOverSharePanel.prototype.OnShare = function () {
-        wx.shareAppMessage({
-            title: '转发标题',
-            imageUrl: 'openDataContext/assets/rankingtitle.png',
-            query: '',
-            success: function (res) {
-                console.log('分享成功', res);
-            },
-            fail: function (err) {
-                console.log('分享失败', err);
-            },
-            complete: function (res) { }
-        });
-    };
     return GameOverSharePanel;
 }(egret.Sprite));
 __reflect(GameOverSharePanel.prototype, "GameOverSharePanel");
+var RankingList = (function (_super) {
+    __extends(RankingList, _super);
+    function RankingList() {
+        var _this = _super.call(this) || this;
+        _this._isShow = false;
+        _this._rankBtn = new egret.Sprite();
+        _this._rankBtn.width = 93;
+        _this._rankBtn.height = 93;
+        var bitmap = new egret.Bitmap();
+        bitmap.texture = RES.getRes('rank_jpg');
+        _this._rankBtn.addChild(bitmap);
+        _this._rankBtn.touchEnabled = true;
+        _this.addChild(_this._rankBtn);
+        _this._rankBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, _this.showRankingList, _this);
+        _this.x = 50;
+        _this.y = 50;
+        return _this;
+    }
+    RankingList.prototype.showRankingList = function () {
+        if (this._isShow) {
+            this.bitmap_rank.parent && this.bitmap_rank.parent.removeChild(this.bitmap_rank);
+            this.rankingListMask.parent && this.rankingListMask.parent.removeChild(this.rankingListMask);
+            this._isShow = false;
+        }
+        else {
+            this.rankingListMask = new egret.Shape();
+            this.rankingListMask.graphics.beginFill(0x000000, 1);
+            this.rankingListMask.graphics.drawRect(0, 0, this.stage.width, this.stage.height);
+            this.rankingListMask.graphics.endFill();
+            this.rankingListMask.alpha = 0.5;
+            this.rankingListMask.touchEnabled = false;
+            this.addChild(this.rankingListMask);
+            this.addChild(this._rankBtn);
+            var bitmapData_1 = new egret.BitmapData(window["sharedCanvas"]);
+            bitmapData_1.$deleteSource = false;
+            var texture = new egret.Texture();
+            texture._setBitmapData(bitmapData_1);
+            this.bitmap_rank = new egret.Bitmap(texture);
+            this.bitmap_rank.width = this.stage.stageWidth;
+            this.bitmap_rank.height = this.stage.stageHeight;
+            this.addChild(this.bitmap_rank);
+            egret.startTick(function (timeStartmp) {
+                egret.WebGLUtils.deleteWebGLTexture(bitmapData_1.webGLTexture);
+                bitmapData_1.webGLTexture = null;
+                return false;
+            }, this);
+            this._isShow = true;
+            WxInvoke.instance().showFriendRankingList();
+        }
+    };
+    return RankingList;
+}(egret.Sprite));
+__reflect(RankingList.prototype, "RankingList");
 var StartGamePanel = (function (_super) {
     __extends(StartGamePanel, _super);
     function StartGamePanel(textures) {
@@ -784,6 +894,7 @@ var ViewManage = (function (_super) {
         _this._GameOverButtonPanel = new GameOverButtonPanel(textures);
         _this._GameOverButtonPanel._reStartBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, _this.OnReStartClick, _this);
         _this._GameOverSharePanel = new GameOverSharePanel();
+        _this._RankingListPanel = new RankingList();
         _this.showStartGameView();
         return _this;
     }
@@ -795,9 +906,11 @@ var ViewManage = (function (_super) {
         if (this._StartGamePanel) {
             this._rootView.addChild(this._StartGamePanel);
         }
+        this._rootView.addChild(this._RankingListPanel);
     };
     //开始游戏按钮点击
     ViewManage.prototype.OnStartGameClick = function () {
+        this._rootView.removeChild(this._RankingListPanel);
         this._rootView.removeChild(this._StartGamePanel);
         this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.OnStartGameClick, this);
         this.createTiles();
@@ -872,6 +985,7 @@ var ViewManage = (function (_super) {
         if (isS) {
             this._GameOverPanelS.updataData();
             this._rootView.addChild(this._GameOverPanelS);
+            WxInvoke.instance().uploadScore(DataManage.stepNum);
         }
         else {
             this._rootView.addChild(this._GameOverPanelF);

@@ -17,7 +17,6 @@ class DebugPlatform implements Platform {
         return { nickName: "username" }
     }
     async login() {
-
     }
 }
 

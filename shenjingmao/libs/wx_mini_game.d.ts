@@ -30,7 +30,7 @@ declare function setInterval(callback: ()=>void, delay: number, rest: any): numb
 
 declare const wx: {
 
-    createUserInfoButton(object: {type:string,text:string,image:string,style:Object}): UserInfoButton;
+    createUserInfoButton(): void;
     /**
      * 创建一个画布对象。首次调用创建的是显示在屏幕上的画布，之后调用创建的都是离屏画布。
      */
@@ -965,11 +965,3 @@ declare class Stats {
   * iOS/Android 不支持的 WebGL 接
    */
 declare interface RenderingContext {}
-
-declare interface UserInfoButton{
-    text: string;
-    image: string;
-    style: Object;
-    show(): void;
-    onTap(callback: (res: any)=>void) : void;
-}

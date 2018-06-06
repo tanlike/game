@@ -45,7 +45,7 @@ class DataManage{
     }
     //初始化地图障碍
     public selectTile(){
-        var num : number = 10 + Math.floor(Math.random() * 10);
+        var num : number = 60 + Math.floor(Math.random() * 10);
         for(var i:number=0; i < num; i++){
             var index : number = Math.floor(Math.random() * DataManage.tileNum);
             this._tileDatas[index] = false;
