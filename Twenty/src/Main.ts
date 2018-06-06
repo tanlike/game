@@ -64,50 +64,45 @@ class Main extends egret.DisplayObjectContainer {
         this.creatOneRowBoxs();
     }
 
-    private map: Array<boolean> = [];        //格子中是否有元素
-    private elements: Array<element> = [];   //56个格子中存放的box
-    private maxNum: number = 5;         //最大数字
-    private timer: egret.Timer;         //定时器
-    private isGameOver:boolean = false; //游戏是否结束         
+    private timer: egret.Timer;         //定时器  
 
     public init(){
-        for(var i:number=0; i < 56; i++){
-            this.map.push(false);
-        }
-        this.timer = new egret.Timer(1000,1);
-        this.timer.addEventListener(egret.TimerEvent.TIMER,this.creatOneRowBoxs,this);
+        this.timer = new egret.Timer(10000,0);
+        //this.timer.addEventListener(egret.TimerEvent.TIMER,this.creatOneRowBoxs,this);
         this.timer.start();
     }
 
     private creatOneRowBoxs(){
-        console.log('执行回调');
-        if(this.isGameOver){
-            this.timer.stop();
-            return;
-        }
-        for(var i:number=0;i < 7; i++){
-            for(var j:number=55; j >= 0; j--){
-                if(this.map[j]){
-                    var point = Util.getPointXYByIndex(this.elements[j].index)
-                    if(point.y == 0){
-                        this.isGameOver = true;
-                        console.log('游戏结束')
-                        return;
-                    }
-                    var from = this.elements[j].index;
-                    this.elements[j].index = this.elements[j].index + 7;
-                    this.map[from] = false;
-                    this.map[this.elements[j].index] = true;
-                    this.elements[j].move(from,this.elements[j].index);
-                    console.log('第'+j+"位的数字上移");
+        DataManage.instance().maxToMinSort();
+        DataManage.instance().elements.forEach((value,index) => {
+          //  console.log('原位置=' + value.index + ',');
+            if(DataManage.instance().map[value.index]){
+                var point = Util.getPointByIndex(value.index)
+            //    console.log('索引号='+value.index+','+point.y);
+                if(point.y == 0){
+                    DataManage.instance().isGameOver = true;
+                    this.timer.stop();
+            //        console.log('游戏结束');
+                    return;
                 }
+                if(!DataManage.instance().isGameOver){
+                    DataManage.instance().map[value.index] = false;
+                    value.index += 7;
+        //          console.log('上移 位置=' + value.index);
+                    DataManage.instance().map[value.index] = true;
+                    value.move(value.index);
+                }
+            }    
+        });
+        if(!DataManage.instance().isGameOver){
+            for(var i:number=0;i < 7; i++){
+                var num = Math.floor(Math.random() * (DataManage.instance().maxNum - 2));
+                var _element = new element(num,i);
+                DataManage.instance().elements.push(_element);
+                this.addChild(_element);
+    //         console.log('添加方块='+ num +"," + i);
+                DataManage.instance().map[i] = true;
             }
-            var num = 1 + Math.floor(Math.random() * (this.maxNum - 2));
-            this.elements[i] = new element(num,i);
-            this.addChild(this.elements[i]);
-            console.log('添加方块='+i+","+num);
-            this.map[i] = true;
         }
     }
-    
 }

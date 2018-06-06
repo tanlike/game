@@ -14,7 +14,7 @@ var Util = (function () {
         var point = new egret.Point();
         point.x = 218 + 44 * (index % 7);
         point.y = 102 + 44 * (7 - Math.floor(index / 7));
-        console.log('point=' + point);
+        //  console.log('point='+point);
         return point;
     };
     Util.GetIndexByPoint = function (p) {
