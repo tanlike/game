@@ -13,13 +13,9 @@ var GameEvent = (function (_super) {
     function GameEvent(type, bubbles, cancelable) {
         if (bubbles === void 0) { bubbles = false; }
         if (cancelable === void 0) { cancelable = false; }
-        var _this = _super.call(this, type, bubbles, cancelable) || this;
-        _this.box_click_index = 0;
-        return _this;
+        return _super.call(this, type, bubbles, cancelable) || this;
     }
-    GameEvent.BOX_CLICK = "box_click";
-    GameEvent.START_GAME = "start_game";
-    GameEvent.OVER_GAME = 'over_game';
+    GameEvent.CLICKBOX = "clickbox";
     return GameEvent;
 }(egret.Event));
 __reflect(GameEvent.prototype, "GameEvent");

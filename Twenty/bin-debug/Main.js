@@ -47,7 +47,9 @@ var Main = (function (_super) {
     __extends(Main, _super);
     function Main() {
         var _this = _super.call(this) || this;
-        _this.addEventListener(egret.Event.ADDED_TO_STAGE, _this.onAddToStage, _this);
+        _this._touchStatus = false; //是否已经点击
+        _this.off_XY = new egret.Point(); //记录鼠标点击的偏移位置
+        _this.once(egret.Event.ADDED_TO_STAGE, _this.onAddToStage, _this);
         return _this;
     }
     Main.prototype.onAddToStage = function (event) {
@@ -116,55 +118,162 @@ var Main = (function (_super) {
         });
     };
     Main.prototype.createGameScene = function () {
-        var bg = new egret.TextField;
-        bg.width = 320;
-        bg.height = 365;
-        bg.x = (this.stage.stageWidth - bg.width) / 2;
-        bg.y = (this.stage.stageHeight - bg.height) / 2;
-        bg.background = true;
-        bg.backgroundColor = 0xc2c7cb;
-        bg.border = true;
-        bg.borderColor = 0xc2c7cb;
-        this.addChild(bg);
+        this.bg = new egret.TextField;
+        this.bg.width = 640;
+        this.bg.height = 730;
+        this.bg.x = (this.stage.stageWidth - this.bg.width) / 2;
+        this.bg.y = (this.stage.stageHeight - this.bg.height) / 2;
+        this.bg.background = true;
+        this.bg.backgroundColor = 0xc2c7cb;
+        this.bg.border = true;
+        this.bg.borderColor = 0xc2c7cb;
+        this.bg.touchEnabled = true;
+        this.addChild(this.bg);
         console.log('游戏开始');
         this.init();
         this.creatOneRowBoxs();
     };
     Main.prototype.init = function () {
-        this.timer = new egret.Timer(10000, 0);
+        this.timer = new egret.Timer(1000, 0);
         //this.timer.addEventListener(egret.TimerEvent.TIMER,this.creatOneRowBoxs,this);
         this.timer.start();
+        this.bg.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.mouseDown, this);
+        this.bg.addEventListener(egret.TouchEvent.TOUCH_END, this.mouseUp, this);
     };
+    //获取鼠标点击位置的box
+    Main.prototype.getElement = function (x, y) {
+        for (var _i = 0, _a = DataManage.instance().elements; _i < _a.length; _i++) {
+            var value = _a[_i];
+            if (value.hitTestPoint(x, y)) {
+                return value;
+            }
+        }
+        return null;
+    };
+    Main.prototype.mouseDown = function (evt) {
+        console.log("Mouse Down.");
+        this._clickElement = this.getElement(evt.stageX, evt.stageY);
+        if (this._clickElement) {
+            // console.log('点击的box的索引=' + this._clickElement.index);
+            // console.log('evt.stageX=' + evt.stageX + ',evt.stageY=' + evt.stageY);
+            // console.log('this._clickElement.x=' + this._clickElement.box.x + ',this._clickElement.y=' + this._clickElement.box.y);
+            this._touchStatus = true;
+            this.off_XY.x = evt.stageX - this._clickElement.box.x;
+            this.off_XY.y = evt.stageY - this._clickElement.box.y;
+            DataManage.instance().map[this._clickElement.index] = false;
+            this.bg.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.mouseMove, this);
+        }
+        for (var i = 0; i < 56; i++) {
+            if (DataManage.instance().map[i]) {
+                for (var _i = 0, _a = DataManage.instance().elements; _i < _a.length; _i++) {
+                    var value = _a[_i];
+                    if (value.index == i) {
+                        //console.log(i + '处有障碍');
+                        break;
+                    }
+                }
+            }
+        }
+    };
+    Main.prototype.mouseMove = function (evt) {
+        if (this._touchStatus) {
+            // console.log("moving now ! Mouse: [X:"+evt.stageX+",Y:"+evt.stageY+"]");
+            var x = evt.stageX - this.off_XY.x;
+            var y = evt.stageY - this.off_XY.y;
+            var point = this.isInBorder(x, y);
+            this._clickElement.box.x = point.x;
+            this._clickElement.box.y = point.y;
+        }
+    };
+    Main.prototype.mouseUp = function (evt) {
+        console.log("Mouse Up.");
+        if (this._touchStatus) {
+            this.drop(evt.stageX, evt.stageY);
+        }
+        this.bg.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.mouseMove, this);
+        this._touchStatus = false;
+    };
+    //边界判断
+    Main.prototype.isInBorder = function (x, y) {
+        var left_bottom = new egret.Point();
+        left_bottom = Util.getPointXYByIndex(0);
+        var right_top = new egret.Point();
+        right_top = Util.getPointXYByIndex(55);
+        if (x < left_bottom.x) {
+            x = left_bottom.x;
+        }
+        if (x > right_top.x) {
+            x = right_top.x;
+        }
+        if (y < right_top.y) {
+            y = right_top.y;
+        }
+        if (y > left_bottom.y) {
+            y = left_bottom.y;
+        }
+        return new egret.Point(x, y);
+    };
+    //松开之后的下落
+    Main.prototype.drop = function (x, y) {
+        var index = Util.getIndexByXy(x, y);
+        var point = Util.getPointByIndex(index);
+        if (point.y == 7) {
+            return;
+        }
+        for (var i = point.y; i < 7; i++) {
+            var _index = index - 7;
+            if (DataManage.instance().map[_index]) {
+                var box = Util.getElementByIndex(_index);
+                if (Util.isEquality(this._clickElement, box)) {
+                    this._clickElement.moveto(_index);
+                    this._clickElement.index = _index;
+                    DataManage.instance().map[_index] = true;
+                    //  if(Util.isEliminate(this._clickElement,box)){
+                    this._clickElement.eliminate(box);
+                    console.log('字相同移动到' + box.num);
+                    //   }
+                }
+                else {
+                    this._clickElement.moveto(index);
+                    this._clickElement.index = index;
+                    DataManage.instance().map[index] = true;
+                    console.log('字不同移动到' + index);
+                }
+                return;
+            }
+            index = _index;
+        }
+        this._clickElement.moveto(index);
+        this._clickElement.index = index;
+        DataManage.instance().map[index] = true;
+    };
+    //生成砖块
     Main.prototype.creatOneRowBoxs = function () {
-        var _this = this;
         DataManage.instance().maxToMinSort();
-        DataManage.instance().elements.forEach(function (value, index) {
-            //  console.log('原位置=' + value.index + ',');
+        for (var _i = 0, _a = DataManage.instance().elements; _i < _a.length; _i++) {
+            var value = _a[_i];
             if (DataManage.instance().map[value.index]) {
                 var point = Util.getPointByIndex(value.index);
-                //    console.log('索引号='+value.index+','+point.y);
                 if (point.y == 0) {
                     DataManage.instance().isGameOver = true;
-                    _this.timer.stop();
-                    //        console.log('游戏结束');
+                    this.timer.stop();
                     return;
                 }
                 if (!DataManage.instance().isGameOver) {
                     DataManage.instance().map[value.index] = false;
                     value.index += 7;
-                    //          console.log('上移 位置=' + value.index);
                     DataManage.instance().map[value.index] = true;
-                    value.move(value.index);
+                    value.moveto(value.index);
                 }
             }
-        });
+        }
         if (!DataManage.instance().isGameOver) {
             for (var i = 0; i < 7; i++) {
                 var num = Math.floor(Math.random() * (DataManage.instance().maxNum - 2));
                 var _element = new element(num, i);
+                _element.addEventListener(egret.TouchEvent.TOUCH_TAP, this.mouseDown, this);
                 DataManage.instance().elements.push(_element);
                 this.addChild(_element);
-                //         console.log('添加方块='+ num +"," + i);
                 DataManage.instance().map[i] = true;
             }
         }
