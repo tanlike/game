@@ -50,24 +50,28 @@ var element = (function (_super) {
         this.box.y = point.y;
     };
     element.prototype.eliminate = function (box) {
-        DataManage.instance().elements.forEach(function (value, index) {
-            console.log('数组:' + index + ',' + value.index + ',' + value.num);
-        });
-        console.log('----------------------------------------------');
-        this.num += 1;
-        if (this.num > DataManage.instance().maxNum) {
-            DataManage.instance().maxNum = this.num;
+        box.num += 1;
+        if (box.num > DataManage.instance().maxNum) {
+            DataManage.instance().maxNum = box.num;
         }
-        var index = DataManage.instance().elements.indexOf(box);
-        DataManage.instance().elements.splice(index, 1);
-        box.parent.removeChild(box);
-        DataManage.instance().elements.forEach(function (value, index) {
-            console.log('数组:' + index + ',' + value.index + ',' + value.num);
-        });
-        this.updata();
+        box.box.text = box.num + 1 + '';
+        if (this.parent) {
+            this.parent.removeChild(this);
+        }
     };
-    element.prototype.updata = function () {
-        this.box.text = this.num + 1 + '';
+    //判断两个砖块的数字是否相等
+    element.prototype.isEquality = function (box) {
+        if (this.num === box.num) {
+            return true;
+        }
+        return false;
+    };
+    //判断两个砖块是否可以消除
+    element.prototype.isEliminate = function (box) {
+        if (this.index === box.index) {
+            return true;
+        }
+        return false;
     };
     return element;
 }(egret.Sprite));

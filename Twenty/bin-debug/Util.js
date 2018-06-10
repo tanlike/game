@@ -25,21 +25,25 @@ var Util = (function () {
     };
     //碰撞检测
     Util.hitTestP = function (obj1, obj2) {
-        var rect1 = obj1.getBounds(); //获取显示对象的测量边界
-        var rect2 = obj2.getBounds();
-        rect1.x = obj1.x;
-        rect1.y = obj1.y;
-        rect2.x = obj2.x;
-        rect2.y = obj2.y;
-        //此方法检查指定的 Rectangle 对象的 x、y、width 和 height 属性，以查看它是否与此 Rectangle 对象相交。
-        return rect1.intersects(rect2);
+        if (obj1 && obj2) {
+            var rect1 = obj1.getBounds(); //获取显示对象的测量边界
+            var rect2 = obj2.getBounds();
+            rect1.x = obj1.box.x;
+            rect1.y = obj1.box.y;
+            rect2.x = obj2.box.x;
+            rect2.y = obj2.box.y;
+            //此方法检查指定的 Rectangle 对象的 x、y、width 和 height 属性，以查看它是否与此 Rectangle 对象相交。
+            return rect1.intersects(rect2);
+        }
+        return false;
     };
     //根据鼠标位置返回方块的索引
     Util.getIndexByXy = function (x, y) {
+        DataManage.instance().minToMaxSort();
         for (var i = 0; i < 56; i++) {
             var point = this.getPointXYByIndex(i);
-            if (x <= point.x && y >= point.y) {
-                // console.log('index='+i);
+            if (x <= point.x + 40 && y >= point.y - 40) {
+                //  console.log(x+'<'+point.x+','+y+'>'+point.y+',index='+i);
                 return i;
             }
         }
@@ -53,21 +57,6 @@ var Util = (function () {
             }
         }
         return null;
-    };
-    //判断两个砖块的数字是否相等
-    Util.isEquality = function (box1, box2) {
-        console.log(box1.num + ',' + box2.num);
-        if (box1.num === box2.num) {
-            return true;
-        }
-        return false;
-    };
-    //判断两个砖块是否可以消除
-    Util.isEliminate = function (box1, box2) {
-        if (Math.abs(box1.box.x - box2.box.y) <= 1 && Math.abs(box1.box.y - box2.box.y) <= 1) {
-            return true;
-        }
-        return false;
     };
     return Util;
 }());

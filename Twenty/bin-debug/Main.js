@@ -49,6 +49,7 @@ var Main = (function (_super) {
         var _this = _super.call(this) || this;
         _this._touchStatus = false; //是否已经点击
         _this.off_XY = new egret.Point(); //记录鼠标点击的偏移位置
+        _this._isEliminate = false; //记录砖块是否已消除
         _this.once(egret.Event.ADDED_TO_STAGE, _this.onAddToStage, _this);
         return _this;
     }
@@ -135,10 +136,10 @@ var Main = (function (_super) {
     };
     Main.prototype.init = function () {
         this.timer = new egret.Timer(1000, 0);
-        //this.timer.addEventListener(egret.TimerEvent.TIMER,this.creatOneRowBoxs,this);
+        // this.timer.addEventListener(egret.TimerEvent.TIMER,this.creatOneRowBoxs,this);
         this.timer.start();
-        this.bg.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.mouseDown, this);
-        this.bg.addEventListener(egret.TouchEvent.TOUCH_END, this.mouseUp, this);
+        this.stage.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.mouseDown, this);
+        this.stage.addEventListener(egret.TouchEvent.TOUCH_END, this.mouseUp, this);
     };
     //获取鼠标点击位置的box
     Main.prototype.getElement = function (x, y) {
@@ -157,22 +158,13 @@ var Main = (function (_super) {
             // console.log('点击的box的索引=' + this._clickElement.index);
             // console.log('evt.stageX=' + evt.stageX + ',evt.stageY=' + evt.stageY);
             // console.log('this._clickElement.x=' + this._clickElement.box.x + ',this._clickElement.y=' + this._clickElement.box.y);
+            DataManage.instance().delete(this._clickElement);
             this._touchStatus = true;
+            this._isEliminate = false;
             this.off_XY.x = evt.stageX - this._clickElement.box.x;
             this.off_XY.y = evt.stageY - this._clickElement.box.y;
             DataManage.instance().map[this._clickElement.index] = false;
-            this.bg.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.mouseMove, this);
-        }
-        for (var i = 0; i < 56; i++) {
-            if (DataManage.instance().map[i]) {
-                for (var _i = 0, _a = DataManage.instance().elements; _i < _a.length; _i++) {
-                    var value = _a[_i];
-                    if (value.index == i) {
-                        //console.log(i + '处有障碍');
-                        break;
-                    }
-                }
-            }
+            this.stage.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.mouseMove, this);
         }
     };
     Main.prototype.mouseMove = function (evt) {
@@ -180,72 +172,103 @@ var Main = (function (_super) {
             // console.log("moving now ! Mouse: [X:"+evt.stageX+",Y:"+evt.stageY+"]");
             var x = evt.stageX - this.off_XY.x;
             var y = evt.stageY - this.off_XY.y;
-            var point = this.isInBorder(x, y);
-            this._clickElement.box.x = point.x;
-            this._clickElement.box.y = point.y;
+            var point = this.isInBorder(x, y); //边界处理
+            x = point.x;
+            y = point.y;
+            // this._clickElement.index = Util.getIndexByXy(x,y);
+            console.log('获取对象的index=' + this._clickElement.index + ',x = ' + x + ',y = ' + y);
+            var hitList = DataManage.instance().getHitList(this._clickElement);
+            if (hitList.length > 0) {
+                // console.log('碰撞数量=' + hitList.length);
+                if (hitList.length == 1) {
+                    if (this._clickElement.isEquality(hitList[0])) {
+                        if (this._clickElement.isEliminate(hitList[0])) {
+                            this._isEliminate = true;
+                            this._clickElement.eliminate(hitList[0]);
+                            console.log('移动中消除');
+                        }
+                    }
+                    else {
+                        if (this._clickElement.index == hitList[0].index + 1 || this._clickElement.index == hitList[0].index - 1) {
+                            x = this._clickElement.box.x;
+                            console.log('与左或右碰撞');
+                        }
+                        if (this._clickElement.index == hitList[0].index + 7 || this._clickElement.index == hitList[0].index - 7) {
+                            y = this._clickElement.box.y;
+                            console.log('与上或下碰撞');
+                        }
+                    }
+                }
+            }
+            this._clickElement.box.x = x;
+            this._clickElement.box.y = y;
+            this._clickElement.index = Util.getIndexByXy(x, y);
         }
     };
     Main.prototype.mouseUp = function (evt) {
         console.log("Mouse Up.");
-        if (this._touchStatus) {
-            this.drop(evt.stageX, evt.stageY);
+        if (this._touchStatus && !this._isEliminate) {
+            this.drop();
         }
-        this.bg.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.mouseMove, this);
+        if (this.stage.hasEventListener(egret.TouchEvent.TOUCH_MOVE)) {
+            this.stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.mouseMove, this);
+        }
         this._touchStatus = false;
     };
     //边界判断
     Main.prototype.isInBorder = function (x, y) {
-        var left_bottom = new egret.Point();
-        left_bottom = Util.getPointXYByIndex(0);
-        var right_top = new egret.Point();
-        right_top = Util.getPointXYByIndex(55);
-        if (x < left_bottom.x) {
-            x = left_bottom.x;
+        var left_bottom_x = 60;
+        var left_bottom_y = 895;
+        var right_top_x = 600;
+        var right_top_y = 265;
+        if (x < left_bottom_x) {
+            x = left_bottom_x;
         }
-        if (x > right_top.x) {
-            x = right_top.x;
+        if (x > right_top_x) {
+            x = right_top_x;
         }
-        if (y < right_top.y) {
-            y = right_top.y;
+        if (y < right_top_y) {
+            y = right_top_y;
         }
-        if (y > left_bottom.y) {
-            y = left_bottom.y;
+        if (y > left_bottom_y) {
+            y = left_bottom_y;
         }
         return new egret.Point(x, y);
     };
     //松开之后的下落
-    Main.prototype.drop = function (x, y) {
-        var index = Util.getIndexByXy(x, y);
-        var point = Util.getPointByIndex(index);
-        if (point.y == 7) {
-            return;
-        }
-        for (var i = point.y; i < 7; i++) {
-            var _index = index - 7;
-            if (DataManage.instance().map[_index]) {
-                var box = Util.getElementByIndex(_index);
-                if (Util.isEquality(this._clickElement, box)) {
-                    this._clickElement.moveto(_index);
-                    this._clickElement.index = _index;
-                    DataManage.instance().map[_index] = true;
-                    //  if(Util.isEliminate(this._clickElement,box)){
+    Main.prototype.drop = function () {
+        //  console.log('自由落体');
+        var _index = this._clickElement.index;
+        var point = Util.getPointByIndex(this._clickElement.index);
+        for (var i = 0; i < 8 - point.y; i++) {
+            this._clickElement.index = _index - 7 * i;
+            //   console.log('落体索引=' + index);
+            if (DataManage.instance().map[this._clickElement.index]) {
+                var box = Util.getElementByIndex(this._clickElement.index);
+                if (this._clickElement.isEquality(box)) {
+                    this._clickElement.moveto(this._clickElement.index);
+                    // this._clickElement.index = _index;
+                    // DataManage.instance().map[_index] = true;
+                    // if(this._clickElement.isEliminate(box)){
                     this._clickElement.eliminate(box);
-                    console.log('字相同移动到' + box.num);
-                    //   }
+                    //       console.log('字相同移动到' + box.num);
+                    //  }
                 }
                 else {
-                    this._clickElement.moveto(index);
-                    this._clickElement.index = index;
-                    DataManage.instance().map[index] = true;
-                    console.log('字不同移动到' + index);
+                    this._clickElement.index += 7;
+                    this._clickElement.moveto(this._clickElement.index);
+                    DataManage.instance().map[this._clickElement.index] = true;
+                    DataManage.instance().elements.push(this._clickElement);
+                    //     console.log('字不同移动到' + index);
                 }
+                //  console.log('遇到障碍');
                 return;
             }
-            index = _index;
         }
-        this._clickElement.moveto(index);
-        this._clickElement.index = index;
-        DataManage.instance().map[index] = true;
+        this._clickElement.moveto(this._clickElement.index);
+        DataManage.instance().map[this._clickElement.index] = true;
+        DataManage.instance().elements.push(this._clickElement);
+        //  console.log('方块已在最下面');
     };
     //生成砖块
     Main.prototype.creatOneRowBoxs = function () {

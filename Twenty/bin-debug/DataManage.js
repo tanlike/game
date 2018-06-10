@@ -50,6 +50,22 @@ var DataManage = (function () {
             }
         });
     };
+    //从数组中删除
+    DataManage.prototype.delete = function (box) {
+        var index = DataManage.instance().elements.indexOf(box);
+        DataManage.instance().elements.splice(index, 1);
+    };
+    //获取碰撞数组
+    DataManage.prototype.getHitList = function (box) {
+        var arr = [];
+        DataManage.instance().elements.forEach(function (value) {
+            // console.log('box.index='+box.index+',value.index='+value.index+','+Util.hitTestP(box,value));
+            if (Util.hitTestP(box, value)) {
+                arr.push(value);
+            }
+        });
+        return arr;
+    };
     DataManage._isInit = false;
     return DataManage;
 }());

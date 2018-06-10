@@ -48,26 +48,28 @@ class element extends egret.Sprite{
     }
 
     public eliminate(box: element){
-        DataManage.instance().elements.forEach((value,index) => {
-            console.log('数组:' + index + ',' + value.index + ',' + value.num)
-        })
-        console.log('----------------------------------------------');
-        this.num += 1;
-        if(this.num > DataManage.instance().maxNum){
-            DataManage.instance().maxNum = this.num;
+        box.num += 1;
+        if(box.num > DataManage.instance().maxNum){
+            DataManage.instance().maxNum = box.num;
         }
-        var index: number = DataManage.instance().elements.indexOf(box);
-        DataManage.instance().elements.splice(index,1);
-        box.parent.removeChild(box);
-        
-        DataManage.instance().elements.forEach((value,index) => {
-            console.log('数组:' + index + ',' + value.index + ',' + value.num)
-        })
-
-        this.updata();
+        box.box.text = box.num + 1 + '';
+        if(this.parent){
+            this.parent.removeChild(this);
+        }
     }
 
-    public updata(){
-        this.box.text = this.num + 1 + '';
+    //判断两个砖块的数字是否相等
+    public isEquality(box: element): boolean{
+        if(this.num === box.num){
+            return true;
+        }
+        return false;
+    }
+    //判断两个砖块是否可以消除
+    public isEliminate(box: element): boolean{
+       if(this.index === box.index){
+           return true;
+       }
+       return false;
     }
 } 
