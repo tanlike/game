@@ -69,8 +69,8 @@ class Main extends egret.DisplayObjectContainer {
     private timer: egret.Timer;         //定时器  
 
     public init(){
-        this.timer = new egret.Timer(1000,0);
-       // this.timer.addEventListener(egret.TimerEvent.TIMER,this.creatOneRowBoxs,this);
+        this.timer = new egret.Timer(10000,0);
+        this.timer.addEventListener(egret.TimerEvent.TIMER,this.creatOneRowBoxs,this);
         this.timer.start();
         this.stage.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.mouseDown,this);
         this.stage.addEventListener(egret.TouchEvent.TOUCH_END,this.mouseUp,this);
@@ -121,7 +121,7 @@ class Main extends egret.DisplayObjectContainer {
 
            // this._clickElement.index = Util.getIndexByXy(x,y);
 
-            console.log('获取对象的index=' + this._clickElement.index + ',x = ' + x + ',y = ' + y);
+           // console.log('获取对象的index=' + this._clickElement.index + ',x = ' + x + ',y = ' + y);
 
             var hitList = DataManage.instance().getHitList(this._clickElement);
             if(hitList.length > 0){                     //没有碰撞对象则不作处理
@@ -131,23 +131,48 @@ class Main extends egret.DisplayObjectContainer {
                         if(this._clickElement.isEliminate(hitList[0])){     //位置重合可消除
                             this._isEliminate = true;
                             this._clickElement.eliminate(hitList[0]);
-                            console.log('移动中消除');
+                            this.stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.mouseMove, this);
+                           // console.log('移动中消除');
                         }
                     }else{
-                        if(this._clickElement.index == hitList[0].index + 1 || this._clickElement.index == hitList[0].index - 1){         //左或右碰撞
-                            x = this._clickElement.box.x;
-                            console.log('与左或右碰撞');
+                        point = this._clickElement.simpleHitHandle(x,y,hitList[0]);
+                    }
+                }else if(hitList.length == 2){           //有两个或以上碰撞对象
+                    //console.log('与两个物体发生碰撞');
+                    if(this._clickElement.isEquality(hitList[0]) || this._clickElement.isEquality(hitList[1])){
+                        if(this._clickElement.isEquality(hitList[0])){
+                            //console.log('与不同字的障碍做碰撞处理');
+                            point = this._clickElement.simpleHitHandle(x,y,hitList[1]);
+                        }else{
+                            //console.log('与不同字的障碍做碰撞处理');
+                            point = this._clickElement.simpleHitHandle(x,y,hitList[0]);
                         }
-                        if(this._clickElement.index == hitList[0].index + 7 || this._clickElement.index == hitList[0].index - 7){
-                            y = this._clickElement.box.y;
-                            console.log('与上或下碰撞');
-                        }
+                    }else{
+                       // console.log('与两字碰撞且没有同字');
+                        console.log(hitList[0].index);
+                        console.log(hitList[1].index);
+                        point = this._clickElement.doubleHitHandle(x,y,hitList[0],hitList[1]);
                     }
                 }
             }
-            this._clickElement.box.x = x;
-            this._clickElement.box.y = y;
-            this._clickElement.index = Util.getIndexByXy(x,y);
+            this._clickElement.box.x = point.x;
+            this._clickElement.box.y = point.y;
+            var _index: number = Util.getIndexByXy(point.x,point.y);
+            var off_X: number = _index - this._clickElement.index
+            if(Math.abs(off_X) == 1){
+             //   console.log('左右偏离1格后,上方方块下落');
+                var e: GameEvent = new GameEvent(GameEvent.BOXDROP);
+                var upBoxList: Array<element> = this._clickElement.getUpAllBox();
+                if(upBoxList.length > 0){
+                    for(var i:number = 0; i< upBoxList.length; i++){
+                        upBoxList[i].dispatchEvent(e);
+                    }
+                }
+            }
+            this._clickElement.index = _index;
+           // console.log('坐标变换x=' + point.x + ',y=' + point.y + ',index=' + this._clickElement.index);
+
+
         }
     }
 
@@ -185,38 +210,28 @@ class Main extends egret.DisplayObjectContainer {
     }
     //松开之后的下落
     private drop(){
-      //  console.log('自由落体');
         var _index: number = this._clickElement.index;
         var point:egret.Point = Util.getPointByIndex(this._clickElement.index);
         for(var i:number = 0; i < 8 - point.y ; i++)
         {
             this._clickElement.index = _index - 7 * i;
-         //   console.log('落体索引=' + index);
             if(DataManage.instance().map[this._clickElement.index]){
                 var box: element = Util.getElementByIndex(this._clickElement.index);
                 if(this._clickElement.isEquality(box)){
-                      this._clickElement.moveto(this._clickElement.index);
-                   // this._clickElement.index = _index;
-                   // DataManage.instance().map[_index] = true;
-                   // if(this._clickElement.isEliminate(box)){
-                        this._clickElement.eliminate(box);
-                 //       console.log('字相同移动到' + box.num);
-                   //  }
+                    this._clickElement.moveto(this._clickElement.index);
+                    this._clickElement.eliminate(box);
                 }else{
                     this._clickElement.index += 7;
                     this._clickElement.moveto(this._clickElement.index);
                     DataManage.instance().map[this._clickElement.index] = true;
                     DataManage.instance().elements.push(this._clickElement);
-               //     console.log('字不同移动到' + index);
                 }
-              //  console.log('遇到障碍');
                 return;
             }
         }
         this._clickElement.moveto(this._clickElement.index);
         DataManage.instance().map[this._clickElement.index] = true;
         DataManage.instance().elements.push(this._clickElement);
-      //  console.log('方块已在最下面');
     }
 
     //生成砖块

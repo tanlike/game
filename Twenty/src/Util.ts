@@ -23,7 +23,7 @@ class Util{
     public static hitTestP(obj1: element,obj2: element): boolean {
         if(obj1 &&　obj2)
         {
-             var rect1:egret.Rectangle = obj1.getBounds();//获取显示对象的测量边界
+            var rect1:egret.Rectangle = obj1.getBounds();//获取显示对象的测量边界
             var rect2:egret.Rectangle = obj2.getBounds();
             rect1.x = obj1.box.x;
             rect1.y = obj1.box.y;

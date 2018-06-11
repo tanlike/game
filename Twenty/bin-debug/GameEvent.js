@@ -15,7 +15,7 @@ var GameEvent = (function (_super) {
         if (cancelable === void 0) { cancelable = false; }
         return _super.call(this, type, bubbles, cancelable) || this;
     }
-    GameEvent.CLICKBOX = "clickbox";
+    GameEvent.BOXDROP = 'boxdrop';
     return GameEvent;
 }(egret.Event));
 __reflect(GameEvent.prototype, "GameEvent");
