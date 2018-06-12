@@ -25,10 +25,10 @@ class Util{
         {
             var rect1:egret.Rectangle = obj1.getBounds();//获取显示对象的测量边界
             var rect2:egret.Rectangle = obj2.getBounds();
-            rect1.x = obj1.box.x;
-            rect1.y = obj1.box.y;
-            rect2.x = obj2.box.x;
-            rect2.y = obj2.box.y;
+            rect1.x = obj1.x;
+            rect1.y = obj1.y;
+            rect2.x = obj2.x;
+            rect2.y = obj2.y;
             //此方法检查指定的 Rectangle 对象的 x、y、width 和 height 属性，以查看它是否与此 Rectangle 对象相交。
             return rect1.intersects(rect2);
         }

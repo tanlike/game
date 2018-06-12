@@ -26,6 +26,9 @@ class DataManage{
         for(var i:number=0; i < 56; i++){
             this.map.push(false);
         }
+        this.elements = [];
+        this.maxNum = 5;
+        this.isGameOver = false;
     }
 
     public minToMaxSort(){
@@ -56,6 +59,7 @@ class DataManage{
     public delete(box: element){
         var index: number = DataManage.instance().elements.indexOf(box);
         DataManage.instance().elements.splice(index,1);
+        box = null;
     }
 
     //获取碰撞数组

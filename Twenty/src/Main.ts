@@ -49,6 +49,7 @@ class Main extends egret.DisplayObjectContainer {
     }
 
     private bg:egret.TextField;
+    //创建游戏背景
     private createGameScene() {
         this.bg = new egret.TextField;
         this.bg.width = 640;
@@ -64,10 +65,11 @@ class Main extends egret.DisplayObjectContainer {
         console.log('游戏开始');
         this.init();
         this.creatOneRowBoxs();
+        this.stage.frameRate = Number(60);
     }
 
     private timer: egret.Timer;         //定时器  
-
+    //鼠标事件监听
     public init(){
         this.timer = new egret.Timer(10000,0);
         this.timer.addEventListener(egret.TimerEvent.TIMER,this.creatOneRowBoxs,this);
@@ -90,26 +92,23 @@ class Main extends egret.DisplayObjectContainer {
         }
         return null;
     }
-
+    //鼠标点击得到box，监听移动事件，移除box在map中的数据
     private mouseDown(evt:egret.TouchEvent)
     {
-        console.log("Mouse Down.");
-        this._clickElement = this.getElement(evt.stageX,evt.stageY);
+       // console.log("Mouse Down.");
+        this._clickElement = this.getElement(evt.stageX,evt.stageY);        
         if(this._clickElement){
-           // console.log('点击的box的索引=' + this._clickElement.index);
-           // console.log('evt.stageX=' + evt.stageX + ',evt.stageY=' + evt.stageY);
-           // console.log('this._clickElement.x=' + this._clickElement.box.x + ',this._clickElement.y=' + this._clickElement.box.y);
             DataManage.instance().delete(this._clickElement);
             this._touchStatus = true;
             this._isEliminate = false;
-            this.off_XY.x = evt.stageX - this._clickElement.box.x;
-            this.off_XY.y = evt.stageY - this._clickElement.box.y;
+            this.off_XY.x = evt.stageX - this._clickElement.x;
+            this.off_XY.y = evt.stageY - this._clickElement.y;
             DataManage.instance().map[this._clickElement.index] = false;
             this.stage.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.mouseMove, this);
         }
     }
 
-    private mouseMove(evt:egret.TouchEvent)     //如果可消除，消除，如果不可，设置砖块的坐标
+    private mouseMove(evt:egret.TouchEvent)     //box确认可移动的位置，如果可消除，则消除，消除后当前位置box及以上box下落
     {
         if( this._touchStatus ){
            // console.log("moving now ! Mouse: [X:"+evt.stageX+",Y:"+evt.stageY+"]");
@@ -119,20 +118,20 @@ class Main extends egret.DisplayObjectContainer {
             x = point.x;
             y = point.y;
 
-           // this._clickElement.index = Util.getIndexByXy(x,y);
-
-           // console.log('获取对象的index=' + this._clickElement.index + ',x = ' + x + ',y = ' + y);
-
             var hitList = DataManage.instance().getHitList(this._clickElement);
             if(hitList.length > 0){                     //没有碰撞对象则不作处理
-               // console.log('碰撞数量=' + hitList.length);
                 if(hitList.length == 1){                //只有一个碰撞对象
                     if(this._clickElement.isEquality(hitList[0])){          //比对数字是否相等
                         if(this._clickElement.isEliminate(hitList[0])){     //位置重合可消除
                             this._isEliminate = true;
-                            this._clickElement.eliminate(hitList[0]);
+                            this._clickElement.eliminate(hitList[0],true);
+                            var boxs = this._clickElement.getUpAllBox();
+                            boxs.forEach(value => {
+                                //console.log('移动中消除后上方方块触发下落事件=' + value.index);
+                                value.drop();
+                            })
                             this.stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.mouseMove, this);
-                           // console.log('移动中消除');
+                            return;
                         }
                     }else{
                         point = this._clickElement.simpleHitHandle(x,y,hitList[0]);
@@ -149,37 +148,34 @@ class Main extends egret.DisplayObjectContainer {
                         }
                     }else{
                        // console.log('与两字碰撞且没有同字');
-                        console.log(hitList[0].index);
-                        console.log(hitList[1].index);
                         point = this._clickElement.doubleHitHandle(x,y,hitList[0],hitList[1]);
                     }
+                }else if(hitList.length == 3){
+                  //  console.log('与三个障碍相撞');
+                    point = new egret.Point(this._clickElement.x,this._clickElement.y);
                 }
             }
-            this._clickElement.box.x = point.x;
-            this._clickElement.box.y = point.y;
+            this._clickElement.x = point.x;                         //没有碰撞的处理，直接赋值
+            this._clickElement.y = point.y;
             var _index: number = Util.getIndexByXy(point.x,point.y);
             var off_X: number = _index - this._clickElement.index
-            if(Math.abs(off_X) == 1){
-             //   console.log('左右偏离1格后,上方方块下落');
+            if(Math.abs(off_X) == 1){                               //左右偏离1格后,上方方块下落
                 var e: GameEvent = new GameEvent(GameEvent.BOXDROP);
                 var upBoxList: Array<element> = this._clickElement.getUpAllBox();
                 if(upBoxList.length > 0){
                     for(var i:number = 0; i< upBoxList.length; i++){
-                        upBoxList[i].dispatchEvent(e);
+                        upBoxList[i].drop();
                     }
                 }
             }
             this._clickElement.index = _index;
-           // console.log('坐标变换x=' + point.x + ',y=' + point.y + ',index=' + this._clickElement.index);
-
-
         }
     }
 
     private mouseUp(evt:egret.TouchEvent)
     {
-        console.log("Mouse Up.");
-        if(this._touchStatus &&　!this._isEliminate){
+      //  console.log("Mouse Up.");
+        if(this._touchStatus &&　!this._isEliminate){            //如果没有合成，松开鼠标后，方块下落
             this.drop();
         }
         if(this.stage.hasEventListener(egret.TouchEvent.TOUCH_MOVE)){
@@ -208,7 +204,7 @@ class Main extends egret.DisplayObjectContainer {
         }
         return new egret.Point(x,y);
     }
-    //松开之后的下落
+    //松开之后的下落，有障碍则停止，字相同则合成
     private drop(){
         var _index: number = this._clickElement.index;
         var point:egret.Point = Util.getPointByIndex(this._clickElement.index);
@@ -218,18 +214,18 @@ class Main extends egret.DisplayObjectContainer {
             if(DataManage.instance().map[this._clickElement.index]){
                 var box: element = Util.getElementByIndex(this._clickElement.index);
                 if(this._clickElement.isEquality(box)){
-                    this._clickElement.moveto(this._clickElement.index);
-                    this._clickElement.eliminate(box);
+                    this._clickElement.eliminate(box,false);
+                    this._clickElement.moveto(this._clickElement.index,true);
                 }else{
                     this._clickElement.index += 7;
-                    this._clickElement.moveto(this._clickElement.index);
+                    this._clickElement.moveto(this._clickElement.index,false);
                     DataManage.instance().map[this._clickElement.index] = true;
                     DataManage.instance().elements.push(this._clickElement);
                 }
                 return;
             }
         }
-        this._clickElement.moveto(this._clickElement.index);
+        this._clickElement.moveto(this._clickElement.index,false);
         DataManage.instance().map[this._clickElement.index] = true;
         DataManage.instance().elements.push(this._clickElement);
     }
@@ -237,6 +233,7 @@ class Main extends egret.DisplayObjectContainer {
     //生成砖块
     private creatOneRowBoxs(){
         DataManage.instance().maxToMinSort();
+        //地图中所有方块上移，如果触顶则游戏结束
         for(var value of DataManage.instance().elements){ 
             if(DataManage.instance().map[value.index]){
                 var point = Util.getPointByIndex(value.index)
@@ -245,22 +242,25 @@ class Main extends egret.DisplayObjectContainer {
                     this.timer.stop();
                     return;
                 }
-                if(!DataManage.instance().isGameOver){
-                    DataManage.instance().map[value.index] = false;
-                    value.index += 7;
-                    DataManage.instance().map[value.index] = true;
-                    value.moveto(value.index);
-                }
+                DataManage.instance().map[value.index] = false;
+                value.index += 7;
+                DataManage.instance().map[value.index] = true;
+                value.moveto(value.index,false);
             }    
         }
+        //最下面一排生成新的方块，字数不能与上方的相等
         if(!DataManage.instance().isGameOver){
             for(var i:number=0;i < 7; i++){
                 var num = Math.floor(Math.random() * (DataManage.instance().maxNum - 2));
+                var box = Util.getElementByIndex(i + 7);
+                if(box && box.num == num){
+                    num = (num + 1) % DataManage.instance().maxNum;
+                }
                 var _element = new element(num,i);
-                _element.addEventListener(egret.TouchEvent.TOUCH_TAP,this.mouseDown,this);
                 DataManage.instance().elements.push(_element);
                 this.addChild(_element);
                 DataManage.instance().map[i] = true;
+                _element.moveto(_element.index,false);
             }
         }
     }

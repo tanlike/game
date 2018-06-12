@@ -34,39 +34,43 @@ var element = (function (_super) {
         _this.box.touchEnabled = false;
         var point = new egret.Point();
         point = Util.getPointXYByIndex(_index);
-        _this.box.x = point.x;
-        _this.box.y = point.y;
+        _this.x = point.x;
+        _this.y = point.y + 90;
         _this.addChild(_this.box);
-        _this.addEventListener(GameEvent.BOXDROP, _this.drop, _this);
         return _this;
+        //    this.addEventListener(GameEvent.BOXDROP,this.drop,this);
     }
     element.prototype.createColorList = function () {
         for (var i = 0; i < 56; i++) {
             this.color.push(0xff0000);
         }
     };
-    element.prototype.moveto = function (_index) {
+    element.prototype.moveto = function (_index, hide) {
         var point = Util.getPointXYByIndex(_index);
-        this.box.x = point.x;
-        this.box.y = point.y;
+        if (hide) {
+            egret.Tween.get(this).to({ x: point.x, y: point.y }, 300, egret.Ease.sineIn).call(this.hide, this);
+        }
+        else {
+            egret.Tween.get(this).to({ x: point.x, y: point.y }, 300, egret.Ease.sineIn);
+        }
     };
-    element.prototype.eliminate = function (box) {
+    //方块合成，数字加1,触发掉落事件
+    element.prototype.eliminate = function (box, hide) {
         box.num += 1;
         if (box.num > DataManage.instance().maxNum) {
             DataManage.instance().maxNum = box.num;
         }
         box.box.text = box.num + 1 + '';
+        if (hide) {
+            this.hide();
+        }
+        console.log('合成后box.index=' + box.index + ',num=' + box.num + ',隐藏的index=' + this.index);
+        box.drop();
+    };
+    //合成后从面板中移除
+    element.prototype.hide = function () {
         if (this.parent) {
             this.parent.removeChild(this);
-        }
-        console.log('--------------------------------------------------');
-        var upBoxList = this.getUpAllBox();
-        upBoxList.push(box);
-        if (upBoxList.length > 0) {
-            for (var i = 0; i < upBoxList.length; i++) {
-                console.log('index=' + upBoxList[i].index);
-                upBoxList[i].drop();
-            }
         }
     };
     //判断两个砖块的数字是否相等
@@ -85,55 +89,55 @@ var element = (function (_super) {
     };
     //单个碰撞处理
     element.prototype.simpleHitHandle = function (x, y, box) {
-        if (x < this.box.x && box.box.x < this.box.x && Math.abs(box.box.y - this.box.y) < 80) {
-            console.log('左移中碰到障碍');
-            x = this.box.x;
+        if (x < this.x && box.x < this.x && Math.abs(box.y - this.y) < 80) {
+            // console.log('左移中碰到障碍');
+            x = this.x;
         }
-        if (x > this.box.x && box.box.x > this.box.x && Math.abs(box.box.y - this.box.y) < 80) {
-            console.log('右移中碰到障碍');
-            x = this.box.x;
+        if (x > this.x && box.x > this.x && Math.abs(box.y - this.y) < 80) {
+            // console.log('右移中碰到障碍');
+            x = this.x;
         }
-        if (y < this.box.y && box.box.y < this.box.y && Math.abs(box.box.x - this.box.x) < 80) {
-            console.log('上移中碰到障碍');
-            y = this.box.y;
+        if (y < this.y && box.y < this.y && Math.abs(box.x - this.x) < 80) {
+            // console.log('上移中碰到障碍');
+            y = this.y;
         }
-        if (y > this.box.y && box.box.y > this.box.y && Math.abs(box.box.x - this.box.x) < 80) {
-            console.log('下移中碰到障碍');
-            y = this.box.y;
+        if (y > this.y && box.y > this.y && Math.abs(box.x - this.x) < 80) {
+            // console.log('下移中碰到障碍');
+            y = this.y;
         }
-        console.log('---------------------------------------------');
+        //console.log('---------------------------------------------');
         return new egret.Point(x, y);
     };
     //两个碰撞处理
     element.prototype.doubleHitHandle = function (x, y, box1, box2) {
-        if (x < this.box.x) {
-            if (box1.box.x < this.box.x && Math.abs(box1.box.y - this.box.y) < 80 || box2.box.x < this.box.x && Math.abs(box2.box.y - this.box.y) < 80) {
+        if (x < this.x) {
+            if (box1.x < this.x && Math.abs(box1.y - this.y) < 80 || box2.x < this.x && Math.abs(box2.y - this.y) < 80) {
                 // console.log('左移中碰到障碍');
-                x = this.box.x;
+                x = this.x;
             }
         }
-        if (x > this.box.x) {
-            if (box1.box.x > this.box.x && Math.abs(box1.box.y - this.box.y) < 80 || box2.box.x > this.box.x && Math.abs(box2.box.y - this.box.y) < 80) {
+        if (x > this.x) {
+            if (box1.x > this.x && Math.abs(box1.y - this.y) < 80 || box2.x > this.x && Math.abs(box2.y - this.y) < 80) {
                 //console.log('右移中碰到障碍');
-                x = this.box.x;
+                x = this.x;
             }
         }
-        if (y < this.box.y) {
-            if (box1.box.y < this.box.y && Math.abs(box1.box.x - this.box.x) < 80 || box2.box.y < this.box.y && Math.abs(box2.box.x - this.box.x) < 80) {
+        if (y < this.y) {
+            if (box1.y < this.y && Math.abs(box1.x - this.x) < 80 || box2.y < this.y && Math.abs(box2.x - this.x) < 80) {
                 //console.log('上移中碰到障碍');
-                y = this.box.y;
+                y = this.y;
             }
         }
-        if (y > this.box.y) {
-            if (box1.box.y > this.box.y && Math.abs(box1.box.x - this.box.x) < 80 || box2.box.y > this.box.y && Math.abs(box2.box.x - this.box.x) < 80) {
+        if (y > this.y) {
+            if (box1.y > this.y && Math.abs(box1.x - this.x) < 80 || box2.y > this.y && Math.abs(box2.x - this.x) < 80) {
                 //console.log('下移中碰到障碍');
-                y = this.box.y;
+                y = this.y;
             }
         }
         //     console.log('---------------------------------------------');
         return new egret.Point(x, y);
     };
-    //获取砖块上方的所有方块
+    //获取砖块自己上方的所有方块
     element.prototype.getUpAllBox = function () {
         var upBoxList = [];
         var point = Util.getPointByIndex(this.index);
@@ -142,38 +146,38 @@ var element = (function (_super) {
             var box = Util.getElementByIndex(index);
             if (box) {
                 upBoxList.push(box);
-                console.log('上方砖块索引=' + box.index);
-            }
-            else {
-                break;
+                //console.log('上方砖块索引=' + box.index);
             }
         }
         return upBoxList;
     };
     //下方无砖块时下落
     element.prototype.drop = function () {
-        console.log('砖块下方移动后下落');
+        // console.log('砖块下落');
         var _index = this.index;
         DataManage.instance().map[this.index] = false;
         var point = Util.getPointByIndex(_index);
         for (var i = 1; i < 8 - point.y; i++) {
             this.index = _index - 7 * i;
-            console.log('下方是否有障碍' + DataManage.instance().map[this.index]);
+            //    console.log('下方是否有障碍' + DataManage.instance().map[this.index]);
             if (DataManage.instance().map[this.index]) {
                 var box = Util.getElementByIndex(this.index);
+                //       console.log('this.num=' + this.num + ',box.num=' + box.num);
+                //      console.log('碰撞对象数字是否相等=' + this.isEquality(box));
                 if (this.isEquality(box)) {
-                    this.moveto(this.index);
-                    this.eliminate(box);
+                    this.moveto(this.index, true);
+                    this.eliminate(box, false);
+                    DataManage.instance().delete(this);
                 }
                 else {
                     this.index += 7;
-                    this.moveto(this.index);
+                    this.moveto(this.index, false);
                     DataManage.instance().map[this.index] = true;
                 }
                 return;
             }
         }
-        this.moveto(this.index);
+        this.moveto(this.index, false);
         DataManage.instance().map[this.index] = true;
     };
     return element;

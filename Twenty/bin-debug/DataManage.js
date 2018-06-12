@@ -23,6 +23,9 @@ var DataManage = (function () {
         for (var i = 0; i < 56; i++) {
             this.map.push(false);
         }
+        this.elements = [];
+        this.maxNum = 5;
+        this.isGameOver = false;
     };
     DataManage.prototype.minToMaxSort = function () {
         DataManage.instance().elements.sort(function (a, b) {
@@ -54,6 +57,7 @@ var DataManage = (function () {
     DataManage.prototype.delete = function (box) {
         var index = DataManage.instance().elements.indexOf(box);
         DataManage.instance().elements.splice(index, 1);
+        box = null;
     };
     //获取碰撞数组
     DataManage.prototype.getHitList = function (box) {
