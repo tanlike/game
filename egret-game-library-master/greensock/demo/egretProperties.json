@@ -1,0 +1,34 @@
+{
+	"native": {
+		"path_ignore": []
+	},
+	"publish": {
+		"web": 0,
+		"native": 1
+	},
+	"template": {},
+	"modules": [
+		{
+			"name": "egret",
+			"path": "${EGRET_DEFAULT}"
+		},
+		{
+			"name": "game",
+			"path": "${EGRET_DEFAULT}"
+		},
+		{
+			"name": "tween",
+			"path": "${EGRET_DEFAULT}"
+		},
+		{
+			"name": "res",
+			"path": "${EGRET_DEFAULT}"
+		},
+		{
+			"name": "greensock",
+			"path": "../libsrc"
+		}
+	],
+	"engineVersion": "5.2.2",
+	"compilerVersion": "5.2.2"
+}

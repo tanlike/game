@@ -26,4 +26,3 @@ var ViewManage = (function (_super) {
     return ViewManage;
 }(egret.EventDispatcher));
 __reflect(ViewManage.prototype, "ViewManage");
-//# sourceMappingURL=ViewManage.js.map

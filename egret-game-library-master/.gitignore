@@ -1,0 +1,16 @@
+bin-debug/
+.idea/
+.wing/
+tools/node_modules
+src/resource/**/*.js
+src/resource/**/**/*.js
+
+release/
+
+tools/nodejs/buildTS.local
+*.local
+*.map
+.idea
+**/*/libs/
+
+socket.io/demo/node_modules

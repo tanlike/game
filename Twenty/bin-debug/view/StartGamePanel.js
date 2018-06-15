@@ -16,4 +16,3 @@ var StartGamePanel = (function (_super) {
     return StartGamePanel;
 }(egret.Sprite));
 __reflect(StartGamePanel.prototype, "StartGamePanel");
-//# sourceMappingURL=StartGamePanel.js.map

@@ -183,4 +183,3 @@ var element = (function (_super) {
     return element;
 }(egret.Sprite));
 __reflect(element.prototype, "element");
-//# sourceMappingURL=element.js.map

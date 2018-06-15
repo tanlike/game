@@ -25,4 +25,3 @@ var BackGroundPanel = (function (_super) {
     return BackGroundPanel;
 }(egret.Sprite));
 __reflect(BackGroundPanel.prototype, "BackGroundPanel");
-//# sourceMappingURL=BackGroundPanel.js.map

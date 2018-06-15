@@ -74,4 +74,3 @@ var DataManage = (function () {
     return DataManage;
 }());
 __reflect(DataManage.prototype, "DataManage");
-//# sourceMappingURL=DataManage.js.map
