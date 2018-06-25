@@ -39,6 +39,8 @@ export class Player extends cc.Component {
     public gameOver(){
         cc.systemEvent.off(cc.SystemEvent.EventType.KEY_DOWN,this.keyDown,this);
         cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP,this.keyUp,this);
+        this.leftMove = false;
+        this.rightMove = false;
     }
 
     private keyDown(evt: cc.Event.EventCustom){

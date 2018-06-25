@@ -16,11 +16,11 @@ export class Game extends cc.Component {
     @property(cc.Node)
     player: cc.Node = null;
 
-    @property
-    distance: number = 50;
-
     @property(cc.Sprite)
     gameOverPanel: cc.Sprite = null;
+
+    @property
+    public duration: number = 5;
 
     private score: number = 0;
     private curStar: cc.Node = null;
@@ -29,6 +29,7 @@ export class Game extends cc.Component {
     start () {
         this.scoreLable.string = '0';
         this.addStar();
+        this.node.on('hit',this.onHitCallback,this);
     }
 
     public addStar(){
@@ -37,7 +38,13 @@ export class Game extends cc.Component {
         let randY: number = cc.random0To1() * this.player.getComponent("Player").jumpHeight - this.node.getChildByName("ground").height / 2 + 50;
         this.curStar .setPosition(randX,randY);
         this.node.addChild(this.curStar);
-        //cc.log('add star');
+    }
+
+    private onHitCallback(){
+        this.curStar.destroy();
+        this.addScore();
+        this.addStar();
+        this.timer = 0;
     }
 
     public addScore(){
@@ -47,15 +54,8 @@ export class Game extends cc.Component {
     }
 
     update(dt){
-        cc.log(cc.pDistance(this.curStar.position,this.player.getPosition()));
-        if(cc.pDistance(this.curStar.position,this.player.getPosition()) < this.distance){
-            this.curStar.destroy();
-            this.addScore();
-            this.addStar();
-            this.timer = 0;
-        }
         this.timer += dt;
-        if(this.timer > this.curStar.getComponent("Star").maxDuration){
+        if(this.timer > this.duration){
             this.gameOver();
         }
     }
