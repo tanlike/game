@@ -16,10 +16,13 @@ export default class Ground extends cc.Component {
     }
  
     private createRange(){
-        cc.log('点击地面');
+        //cc.log('点击地面');
         let createEvent: cc.Event.EventCustom = new cc.Event.EventCustom('createrange',true)
         createEvent.setUserData({index: this.index,node: this.node});
         this.node.dispatchEvent(createEvent);
     }
 
+    onDestroy(){
+        this.node.off(cc.Node.EventType.MOUSE_DOWN,this.createRange,this);
+    }
 }

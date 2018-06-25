@@ -18,8 +18,8 @@ export default class Game extends cc.Component {
     @property(cc.Prefab)
     range: cc.Prefab = null;
 
-    public map: Array<cc.Node> = [];
     public tower: Array<cc.Node> = [];
+    public enemyPool: cc.NodePool;
 
     onLoad(){
         let startX = -427;
@@ -29,17 +29,32 @@ export default class Game extends cc.Component {
                 let ground = cc.instantiate(this.ground);
                 let index: number = i * 8 + j
                 ground.getComponent("Ground").index = index;
-                this.map[index] = ground;
                 ground.setPosition(startX + j * 50,startY - i * 50);
                 this.node.addChild(ground);
-
                 this.tower[index] = null;
             }
+        }
+        this.enemyPool = new cc.NodePool();
+        for(let i=0; i<30; i++){
+            let enemy: cc.Node = cc.instantiate(this.enemy);
+            this.enemyPool.put(enemy);
         }
     }
 
     start () {
         this.node.on("createrange",this.createRange,this);
+        this.node.on("createtower",this.createTower,this);
+        this.schedule(this.addEnemys,30,9,5);
+    }
+
+    private addEnemys(){
+        //cc.log('------------------------------------------------');
+        this.schedule(()=>{
+            cc.log('刷怪');
+            let enemy: cc.Node = this.enemyPool.get();
+            this.node.addChild(enemy);
+            enemy.getComponent("Enemy").init();
+        },0.5,9);
     }
 
     private curRange: cc.Node = null;
@@ -55,34 +70,25 @@ export default class Game extends cc.Component {
         this.curRange = cc.instantiate(this.range);
         this.node.addChild(this.curRange);
         this.curRange.position = position;
-        this.addTowerListen();
-        cc.log('创建选塔界面');
+        //cc.log('创建选塔界面');
     }
 
-    private addTowerListen(){
-        let cannonTurret: cc.Node = this.curRange.getChildByName("CannonTurret");
-        cannonTurret.on(cc.Node.EventType.MOUSE_DOWN,this.createTower1,this);
-        let freezeTurret: cc.Node = this.curRange.getChildByName("FreezeTurret");
-        freezeTurret.on(cc.Node.EventType.MOUSE_DOWN,this.createTower2,this);
-        let machineGunTurret: cc.Node = this.curRange.getChildByName("MachineGunTurret");
-        machineGunTurret.on(cc.Node.EventType.MOUSE_DOWN,this.createTower3,this);
-    }
-
-    private createTower1(){
-        cc.log('创建塔1');
-        let tower: cc.Node = cc.instantiate(this.cannonTurret);
+    private createTower(evt: cc.Event.EventCustom){
+        let type: number = evt.getUserData();
+        //cc.log('建塔类型=' + type);
+        let target: cc.Prefab = null;
+        if(type == 1){
+            target = this.cannonTurret;
+        }else if(type == 2){
+            target = this.freezeTurret;
+        }else if(type == 3){
+            target = this.machineGunTurrent;
+        }
+        let tower: cc.Node = cc.instantiate(target);
         this.tower[this.curIndex] = tower;
         this.node.addChild(tower);
         tower.position = this.curRange.position;
         this.curRange.destroy();
-    }
-
-    private createTower2(){
-        cc.log('创建塔2');
-    }
-
-    private createTower3(){
-        cc.log('创建塔3');
     }
 
     
