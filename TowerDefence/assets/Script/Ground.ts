@@ -7,11 +7,7 @@ export default class Ground extends cc.Component {
 
     public index: number = 0;
 
-    onLoad(){
-        this.init();
-    }
-
-    private init(){
+    public init(){
         this.node.on(cc.Node.EventType.MOUSE_DOWN,this.createRange,this);
     }
  
