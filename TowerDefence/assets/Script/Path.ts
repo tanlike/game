@@ -5,11 +5,11 @@ export class Path {
     public prePath: Path;       //父节点
     public disDes: number;      //到终点的距离
 
-    constructor(index: number,dis: number){
+    constructor(index: number,dis: number,disDes: number,prePath: Path){
         this.index = index;
         this.disPre = dis;
-        this.disDes = 0;
-        this.prePath = null;
+        this.disDes = disDes;
+        this.prePath = prePath;
     }
 
     public mul(): number{

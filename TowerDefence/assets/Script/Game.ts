@@ -89,62 +89,62 @@ export default class Game extends cc.Component {
         return dis;
     }
 
-    public getAroundNodes(path: Path): Array<Path>{    //获得周围可通行的点
-        let point: cc.Vec2 = this.getXYByIndex(path.index);
-        let aroundNodes: Array<Path> = [];
+    public getAroundIndexs(index: number): Array<number>{    //获得周围可通行的点
+        let point: cc.Vec2 = this.getXYByIndex(index);
+        let aroundIndexs: Array<number> = [];
         let up: number = point.y - 1;
         if(up >= 0){
             let index: number = this.getIndexByXY(new cc.Vec2(point.x,up));
             if(this.map[index] && this.tower[index] == null){
-                aroundNodes.push(new Path(index,10));
+                aroundIndexs.push(index);
             }
         }
         let down: number = point.y + 1;
         if(down <= 8){
             let index: number = this.getIndexByXY(new cc.Vec2(point.x,down));
             if(this.map[index] && this.tower[index] == null){
-                aroundNodes.push(new Path(index,10));
+                aroundIndexs.push(index);
             }
         }
         let left: number = point.x - 1;
         if(left >= 0){
             let index: number = this.getIndexByXY(new cc.Vec2(left,point.y));
             if(this.map[index] && this.tower[index] == null){
-                aroundNodes.push(new Path(index,10));
+                aroundIndexs.push(index);
             }
         }
         let right: number = point.x + 1;
         if(right <= 18){
             let index: number = this.getIndexByXY(new cc.Vec2(right,point.y));
             if(this.map[index] && this.tower[index] == null){
-                aroundNodes.push(new Path(index,10));
+                aroundIndexs.push(index);
             }
         }
         if(left >= 0 && up >= 0){
             let index: number = this.getIndexByXY(new cc.Vec2(left,up));
             if(this.map[index] && this.tower[index] == null){
-                aroundNodes.push(new Path(index,14));
+                aroundIndexs.push(index);
             }
         }
         if(left >= 0 && down <= 8){
             let index: number = this.getIndexByXY(new cc.Vec2(left,down));
             if(this.map[index] && this.tower[index] == null){
-                aroundNodes.push(new Path(index,14));
+                aroundIndexs.push(index);
             }
         }
         if(right <= 18 && up >= 0){
             let index: number = this.getIndexByXY(new cc.Vec2(right,up));
             if(this.map[index] && this.tower[index] == null){
-                aroundNodes.push(new Path(index,14));
+                aroundIndexs.push(index);
             }
         }
         if(right <= 18 && down <= 8){
             let index: number = this.getIndexByXY(new cc.Vec2(right,down));
             if(this.map[index] && this.tower[index] == null){
-                aroundNodes.push(new Path(index,14));
+                aroundIndexs.push(index);
             }
         }
-        return aroundNodes;
+        return aroundIndexs;
     }
 
     public getPath(): Array<Path>{
@@ -169,10 +169,14 @@ export default class Game extends cc.Component {
         return way;
     }
 
+    private pathNode: Array<Path> = [];
+
     public findPath(): Path{
+        this.pathNode = [];
         let openList: Array<Path> = [];
         let closeList: Array<Path> = [];
-        let startPath: Path = new Path(this.startIndex,0);
+        let startPath: Path = new Path(this.startIndex,0,this.getDis(this.startIndex,this.endIndex),null);
+        this.pathNode[this.startIndex] = startPath;
         openList.push(startPath);
         let rel:boolean = true;
         while(rel){
@@ -181,38 +185,34 @@ export default class Game extends cc.Component {
                 else if(a.mul() > b.mul()){return 1;}
                 else{return 0;}
             }).shift();
+            this.map[curPath.index].opacity = 100;
             closeList.push(curPath);
             cc.log('------------------------------------------------');
             cc.log('初始=' + curPath.index);
-            let aroundPaths: Array<Path> = this.getAroundNodes(curPath);
-            if(aroundPaths.length == 0){
-                cc.log('找不到路径');
-                rel = false;
-                return null;
-            }
-            for(let path of aroundPaths){
-                if(path.index == this.endIndex){
-                    path.prePath = curPath;
+            let aroundPaths: Array<number> = this.getAroundIndexs(curPath.index);
+            for(let index of aroundPaths){
+                if(this.pathNode[index] == null){
+                    this.pathNode[index] = new Path(index,this.getDis(curPath.index,index),this.getDis(index,this.endIndex),curPath);
+                    this.pathNode[index].disPre += curPath.disPre;
+                }
+                let path: Path = this.pathNode[index];
+                if(index == this.endIndex){
                     cc.log('找到通路');
                     rel = false;
-                    return path;
+                    return this.pathNode[index];
                 }
                 if(closeList.indexOf(path) == -1){
                    if(openList.indexOf(path) == -1){
-                        path.prePath = curPath;
-                        path.disPre += curPath.disPre;
-                        path.disDes = this.getDis(path.index,this.endIndex); 
-                        this.map[path.index].opacity = 100;
                         openList.push(path);
-                        cc.log('不在openList中=' + path.index + ',距初始点距离' + path.disPre + '距离目的地'+ path.disDes + ',父节点=' + curPath.index);
+                        cc.log('不在openList中=' + path.index + ',距初始点距离' + path.disPre + ',距离目的地'+ path.disDes + ',父节点=' + curPath.index);
                    }else{
                         let dis: number = curPath.disPre + this.getDis(path.index,curPath.index);
                         if(dis < path.disPre){
                             path.prePath = curPath;
                             path.disPre = dis;
-                            cc.log('在openList中，更换父节点=' + path.index + ',距初始点距离' + path.disPre + '距离目的地'+ path.disDes + ',父节点=' + curPath.index);
+                            cc.log('在openList中，更换父节点=' + path.index + ',距初始点距离' + path.disPre + ',距离目的地'+ path.disDes + ',父节点=' + curPath.index);
                         }else{
-                            cc.log('在openList中，不换父节点=' + path.index + ',距初始点距离' + path.disPre + '距离目的地'+ path.disDes + ',父节点=' + curPath.index);
+                            cc.log('在openList中，不换父节点=' + path.index + ',距初始点距离' + path.disPre + ',距离目的地'+ path.disDes + ',父节点=' + curPath.index);
                         }
                    }
                }
