@@ -38,11 +38,7 @@ export default class Game extends cc.Component {
                 this.mapHasTower[index] = false;
             }
         }
-        this.enemyPool = new cc.NodePool();
-        for(let i=0; i < 30; i++){
-            let enemy: cc.Node = cc.instantiate(this.enemy);
-            this.enemyPool.put(enemy);
-        }
+        this.enemyPool = new cc.NodePool('Enemy');
     }
 
     start () {
@@ -52,7 +48,7 @@ export default class Game extends cc.Component {
         this.addEnemys();
     }
 
-    private enemys: Array<cc.Node> = [];
+    public enemys: Array<cc.Node> = [];
 
     private getEnemyFromPool(): cc.Node{
         let enemy: cc.Node;
@@ -65,13 +61,13 @@ export default class Game extends cc.Component {
     }
 
     private addEnemys(){
-        // this.schedule(function(){
+         this.schedule(function(){
             let enemy: cc.Node = this.getEnemyFromPool();
             this.enemys.push(enemy);
             this.node.addChild(enemy);
-            enemy.setPosition(Utils.get2dXYByIndex(this.startIndex));
-            enemy.getComponent("Enemy").move();
-        // },3,cc.macro.REPEAT_FOREVER);
+           // enemy.setPosition(Utils.get2dXYByIndex(this.startIndex));
+           // enemy.getComponent("Enemy").move();
+         },3,cc.macro.REPEAT_FOREVER);
     }
 
     private curRange: cc.Node = null;
@@ -291,6 +287,7 @@ export default class Game extends cc.Component {
         this.mapHasTower[this.curIndex] = true;
 
         this.enemys.forEach(value => {
+            value.stopAllActions();
             value.getComponent("Enemy").move();
             //cc.log('怪物重新规划路线');
         })

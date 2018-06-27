@@ -20,11 +20,16 @@ export default class Enemy extends cc.Component {
     private game: Game = null;
 
     onLoad(){
-        this.game = cc.find("Canvas").getComponent("Game");
+        this.game = cc.find("Canvas").getComponent("Game"); 
+    }
+
+    start(){
+        this.node.setPosition(this.bornPoint);
+        cc.moveTo(this.duration,Utils.get2dXYByIndex(this.game.startIndex));
+        this.move();
     }
 
     public move(){
-        this.node.stopAllActions();
         let index = Utils.getIndexBy2dXY(this.node.x,this.node.y);
         let paths: Array<Path> = this.game.getPath(index);
         if(paths != null){
@@ -48,12 +53,20 @@ export default class Enemy extends cc.Component {
         this.game.enemyPool.put(this.node);
     }
 
-    public hurt(){
-        this.hp--;
+    public hurt(dechp: number){
+        this.hp -= dechp;
         if(this.hp <= 0){
-            this.node.destroy();
+            cc.log('杀死怪物');
+            this.game.enemyPool.put(this.node);
         }
     }
 
-    update (dt) {}
+    unuse(){
+        cc.log('放入敌人对象池');
+        this.node.stopAllActions();
+        let index = this.game.enemys.indexOf(this.node);
+        this.game.enemys.splice(index,1);
+    }
+
+   // update (dt) {}
 }
