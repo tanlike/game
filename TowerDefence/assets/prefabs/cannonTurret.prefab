@@ -13,19 +13,23 @@
     "_name": "cannonTurret",
     "_objFlags": 0,
     "_parent": null,
-    "_children": [],
+    "_children": [
+      {
+        "__id__": 2
+      }
+    ],
     "_tag": -1,
     "_active": true,
     "_components": [
       {
-        "__id__": 2
+        "__id__": 4
       },
       {
-        "__id__": 3
+        "__id__": 5
       }
     ],
     "_prefab": {
-      "__id__": 4
+      "__id__": 6
     },
     "_id": "",
     "_opacity": 255,
@@ -53,7 +57,7 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 0,
+      "x": -242,
       "y": 0
     },
     "_skewX": 0,
@@ -62,6 +66,67 @@
     "_globalZOrder": 0,
     "_opacityModifyRGB": false,
     "groupIndex": 0
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "bulletPosition",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 1
+    },
+    "_children": [],
+    "_tag": -1,
+    "_active": true,
+    "_components": [],
+    "_prefab": {
+      "__id__": 3
+    },
+    "_id": "",
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_cascadeOpacityEnabled": true,
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_rotationX": 0,
+    "_rotationY": 0,
+    "_scaleX": 1,
+    "_scaleY": 1,
+    "_position": {
+      "__type__": "cc.Vec2",
+      "x": 18,
+      "y": 0
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_localZOrder": 0,
+    "_globalZOrder": 0,
+    "_opacityModifyRGB": false,
+    "groupIndex": 0
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__uuid__": "67ae3dbc-3556-4a1b-bbfc-5e887703a27d"
+    },
+    "fileId": "50tf5xogJAsYbxYTgUJcR6",
+    "sync": false
   },
   {
     "__type__": "cc.Sprite",
@@ -99,7 +164,10 @@
     "_enabled": true,
     "attack": 1,
     "attckRange": 100,
-    "attckInterval": 1
+    "attckInterval": 1,
+    "bullet": {
+      "__uuid__": "d07ecc94-05b4-45c6-95af-8fa9cd14f350"
+    }
   },
   {
     "__type__": "cc.PrefabInfo",

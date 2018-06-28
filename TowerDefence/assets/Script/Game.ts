@@ -19,11 +19,32 @@ export default class Game extends cc.Component {
     ground: cc.Prefab = null;
     @property(cc.Prefab)
     range: cc.Prefab = null;
+    @property(cc.Button)
+    pauseBtn: cc.Button = null;
+    @property(cc.SpriteFrame)
+    pauseSprite: cc.SpriteFrame = null;
+    @property(cc.Label)
+    scoreLabel: cc.Label = null;
+    @property
+    needScore: number = 20;
+    @property(cc.Label)
+    hpLabel: cc.Label = null;
+    @property
+    hp: number = 3;
+    @property(cc.Node)
+    gameOverPanel: cc.Node = null;
+    @property(cc.Node)
+    pausePanel: cc.Node = null;
 
     public tower: Array<cc.Node> = [];      //塔数组
     public map: Array<cc.Node> = [];        //地图数组
     public mapHasTower: Array<boolean> = [];  //地图是否有塔数组
-    public enemyPool: cc.NodePool;
+    public score : number = 40;                 //记录分数
+
+    public addScore(addScore: number){
+        this.score += addScore;
+        this.scoreLabel.string = "score:" + this.score;
+    }
 
     onLoad(){
         for(let i=0; i<8; i++){
@@ -38,36 +59,65 @@ export default class Game extends cc.Component {
                 this.mapHasTower[index] = false;
             }
         }
-        this.enemyPool = new cc.NodePool('Enemy');
+        this.pauseBtnSpriteFrame = this.pauseBtn.normalSprite;
+        this.addScore(0);
+        this.addHp(0);
     }
 
     start () {
         this.node.on("createrange",this.createRange,this);
         this.node.on("createtower",this.createTower,this);
-        //this.schedule(this.addEnemys,1);
-        this.addEnemys();
+        this.schedule(this.addEnemys,30,cc.macro.REPEAT_FOREVER,1);
+    }
+
+    private reset(){
+        cc.director.loadScene("game");
+    }
+
+    private pauseBtnSpriteFrame: cc.SpriteFrame;
+    private isPause: boolean = false;
+    private isGameOver: boolean = false;
+
+    private pauseGame(){
+        if(this.isGameOver){
+            return;
+        }
+        if(this.isPause){
+            this.isPause = false;
+            this.pauseBtn.normalSprite = this.pauseBtnSpriteFrame;
+            cc.director.resume();
+            this.pausePanel.active = false;
+        }else{
+            this.isPause = true;
+            this.pauseBtn.normalSprite = this.pauseSprite;
+            cc.director.pause();
+            this.pausePanel.active = true;
+            this.pausePanel.setLocalZOrder(999);
+        }
+    }
+
+    public addHp(add: number){
+        this.hp += add;
+        this.hpLabel.string = 'hp:' + this.hp;
+        if(this.hp <= 0){
+            this.gameOverPanel.active = true;
+            this.gameOverPanel.setLocalZOrder(1000);
+            this.isGameOver = true;
+            cc.director.pause();
+        }
     }
 
     public enemys: Array<cc.Node> = [];
-
-    private getEnemyFromPool(): cc.Node{
-        let enemy: cc.Node;
-        if(this.enemyPool.size() > 0){
-            enemy =  this.enemyPool.get();
-        }else{
-            enemy =  cc.instantiate(this.enemy);
-        }
-        return enemy;
-    }
+    private wave:number = 0;
 
     private addEnemys(){
          this.schedule(function(){
-            let enemy: cc.Node = this.getEnemyFromPool();
+            let enemy: cc.Node = cc.instantiate(this.enemy);
+            enemy.getComponent("Enemy").maxHp = enemy.getComponent("Enemy").maxHp + this.wave;
             this.enemys.push(enemy);
             this.node.addChild(enemy);
-           // enemy.setPosition(Utils.get2dXYByIndex(this.startIndex));
-           // enemy.getComponent("Enemy").move();
-         },3,cc.macro.REPEAT_FOREVER);
+         },2,10);
+         this.wave++;
     }
 
     private curRange: cc.Node = null;
@@ -236,6 +286,9 @@ export default class Game extends cc.Component {
     private movePath: Array<Path> = [];
 
     private createRange(evt: cc.Event.EventCustom){
+        if(this.isGameOver || this.isPause){
+            return;
+        }
         let index: number = evt.getUserData().index;
         if(cc.isValid(this.curRange)){
             // cc.log('取消路径');
@@ -269,6 +322,11 @@ export default class Game extends cc.Component {
     }
 
     private createTower(evt: cc.Event.EventCustom){
+        if(this.score < this.needScore){
+            cc.log('分数不够建塔');
+            return;
+        }
+        this.addScore(-this.needScore);
         let type: number = evt.getUserData();
         //cc.log('建塔类型=' + type);
         let target: cc.Prefab = null;
