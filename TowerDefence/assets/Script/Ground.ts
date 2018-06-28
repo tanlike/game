@@ -7,11 +7,11 @@ export default class Ground extends cc.Component {
     public index: number = 0;
 
     public addListen(){
-        this.node.on(cc.Node.EventType.MOUSE_DOWN,this.createRange,this);
+        this.node.on(cc.Node.EventType.TOUCH_START,this.createRange,this);
     }
 
     public offListen(){
-        this.node.off(cc.Node.EventType.MOUSE_DOWN,this.createRange,this);
+        this.node.off(cc.Node.EventType.TOUCH_START,this.createRange,this);
     }
  
     private createRange(){
