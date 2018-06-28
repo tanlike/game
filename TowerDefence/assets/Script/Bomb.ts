@@ -10,6 +10,7 @@ export class Bomb extends cc.Component {
     }
 
     private onFinished(evt: cc.Event.EventCustom){
+        cc.log('回收爆炸图');
         this.node.destroy();
     }
 
