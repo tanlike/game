@@ -966,7 +966,10 @@
         "__id__": 37
       },
       {
-        "__id__": 56
+        "__id__": 39
+      },
+      {
+        "__id__": 58
       }
     ],
     "_tag": -1,
@@ -1015,9 +1018,42 @@
     "_parent": {
       "__id__": 24
     },
-    "_id": "70UcnWnzxCcLO8VlQ42Hch",
+    "_id": "01ejlJaWFL85cB9BawuS9x",
     "_prefab": {
       "__id__": 26
+    },
+    "_name": "leveUpPanel",
+    "_active": true,
+    "_position": {
+      "__type__": "cc.Vec2",
+      "x": 488.6,
+      "y": 352.9
+    },
+    "_rotationX": 0,
+    "_rotationY": 0,
+    "_localZOrder": 0,
+    "_globalZOrder": 0
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 25
+    },
+    "asset": {
+      "__uuid__": "f80b37b7-1f8b-4034-b487-2620aa5119c6"
+    },
+    "fileId": "01ejlJaWFL85cB9BawuS9x",
+    "sync": true
+  },
+  {
+    "__type__": "cc.Node",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 24
+    },
+    "_id": "70UcnWnzxCcLO8VlQ42Hch",
+    "_prefab": {
+      "__id__": 28
     },
     "_name": "bomb",
     "_active": true,
@@ -1034,7 +1070,7 @@
   {
     "__type__": "cc.PrefabInfo",
     "root": {
-      "__id__": 25
+      "__id__": 27
     },
     "asset": {
       "__uuid__": "51da452b-4086-4c89-8c07-b208ff808a40"
@@ -1050,42 +1086,9 @@
     },
     "_id": "4fCV+yEDVGuq6EkRxzLO6R",
     "_prefab": {
-      "__id__": 28
-    },
-    "_name": "cannonTurret",
-    "_active": true,
-    "_position": {
-      "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
-    },
-    "_rotationX": 0,
-    "_rotationY": 0,
-    "_localZOrder": 0,
-    "_globalZOrder": 0
-  },
-  {
-    "__type__": "cc.PrefabInfo",
-    "root": {
-      "__id__": 27
-    },
-    "asset": {
-      "__uuid__": "67ae3dbc-3556-4a1b-bbfc-5e887703a27d"
-    },
-    "fileId": "4fCV+yEDVGuq6EkRxzLO6R",
-    "sync": true
-  },
-  {
-    "__type__": "cc.Node",
-    "_objFlags": 0,
-    "_parent": {
-      "__id__": 24
-    },
-    "_id": "0dh/RlyIZOWowyPd7Y8jD2",
-    "_prefab": {
       "__id__": 30
     },
-    "_name": "freezeTurret",
+    "_name": "cannonTurret",
     "_active": true,
     "_position": {
       "__type__": "cc.Vec2",
@@ -1103,9 +1106,9 @@
       "__id__": 29
     },
     "asset": {
-      "__uuid__": "b0a17010-1f40-4db6-85b2-effa632c3266"
+      "__uuid__": "67ae3dbc-3556-4a1b-bbfc-5e887703a27d"
     },
-    "fileId": "0dh/RlyIZOWowyPd7Y8jD2",
+    "fileId": "4fCV+yEDVGuq6EkRxzLO6R",
     "sync": true
   },
   {
@@ -1114,11 +1117,11 @@
     "_parent": {
       "__id__": 24
     },
-    "_id": "40PaCtrvNOzq5qhkf+cyuy",
+    "_id": "0dh/RlyIZOWowyPd7Y8jD2",
     "_prefab": {
       "__id__": 32
     },
-    "_name": "machineGunTurrent",
+    "_name": "freezeTurret",
     "_active": true,
     "_position": {
       "__type__": "cc.Vec2",
@@ -1136,6 +1139,39 @@
       "__id__": 31
     },
     "asset": {
+      "__uuid__": "b0a17010-1f40-4db6-85b2-effa632c3266"
+    },
+    "fileId": "0dh/RlyIZOWowyPd7Y8jD2",
+    "sync": true
+  },
+  {
+    "__type__": "cc.Node",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 24
+    },
+    "_id": "40PaCtrvNOzq5qhkf+cyuy",
+    "_prefab": {
+      "__id__": 34
+    },
+    "_name": "machineGunTurrent",
+    "_active": true,
+    "_position": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 0
+    },
+    "_rotationX": 0,
+    "_rotationY": 0,
+    "_localZOrder": 0,
+    "_globalZOrder": 0
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 33
+    },
+    "asset": {
       "__uuid__": "7ca61ecf-c735-43e4-934c-0e32d30e4618"
     },
     "fileId": "40PaCtrvNOzq5qhkf+cyuy",
@@ -1149,7 +1185,7 @@
     },
     "_id": "c9TjbqpOROz6GsdncTG/ex",
     "_prefab": {
-      "__id__": 34
+      "__id__": 36
     },
     "_name": "enemy",
     "_active": true,
@@ -1166,7 +1202,7 @@
   {
     "__type__": "cc.PrefabInfo",
     "root": {
-      "__id__": 33
+      "__id__": 35
     },
     "asset": {
       "__uuid__": "c690fb2f-40ad-4562-b10a-9ba5a1e15ee9"
@@ -1182,7 +1218,7 @@
     },
     "_id": "abeka2UgdOHYt/qjILXGnP",
     "_prefab": {
-      "__id__": 36
+      "__id__": 38
     },
     "_name": "hpBar",
     "_active": true,
@@ -1199,7 +1235,7 @@
   {
     "__type__": "cc.PrefabInfo",
     "root": {
-      "__id__": 35
+      "__id__": 37
     },
     "asset": {
       "__uuid__": "120057af-8bb2-4c95-bd9c-ee0c0194f5a8"
@@ -1216,27 +1252,27 @@
     },
     "_children": [
       {
-        "__id__": 38
+        "__id__": 40
       },
       {
-        "__id__": 43
+        "__id__": 45
       },
       {
-        "__id__": 48
+        "__id__": 50
       }
     ],
     "_tag": -1,
     "_active": true,
     "_components": [
       {
-        "__id__": 53
+        "__id__": 55
       },
       {
-        "__id__": 54
+        "__id__": 56
       }
     ],
     "_prefab": {
-      "__id__": 55
+      "__id__": 57
     },
     "_id": "bdapJVW8RCYJWGww6yLvtt",
     "_opacity": 255,
@@ -1279,21 +1315,21 @@
     "_name": "CannonTurret",
     "_objFlags": 0,
     "_parent": {
-      "__id__": 37
+      "__id__": 39
     },
     "_children": [],
     "_tag": -1,
     "_active": true,
     "_components": [
       {
-        "__id__": 39
+        "__id__": 41
       },
       {
-        "__id__": 40
+        "__id__": 42
       }
     ],
     "_prefab": {
-      "__id__": 42
+      "__id__": 44
     },
     "_id": "e4RbyEMGVDU755QDf2GJeM",
     "_opacity": 255,
@@ -1336,7 +1372,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 38
+      "__id__": 40
     },
     "_enabled": true,
     "_spriteFrame": {
@@ -1362,7 +1398,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 38
+      "__id__": 40
     },
     "_enabled": true,
     "transition": 0,
@@ -1384,7 +1420,7 @@
     "zoomScale": 1.2,
     "clickEvents": [
       {
-        "__id__": 41
+        "__id__": 43
       }
     ],
     "_N$interactable": true,
@@ -1422,13 +1458,13 @@
       "__uuid__": "29158224-f8dd-4661-a796-1ffab537140e"
     },
     "_N$target": {
-      "__id__": 38
+      "__id__": 40
     }
   },
   {
     "__type__": "cc.ClickEvent",
     "target": {
-      "__id__": 37
+      "__id__": 39
     },
     "component": "Range",
     "handler": "createTower",
@@ -1437,7 +1473,7 @@
   {
     "__type__": "cc.PrefabInfo",
     "root": {
-      "__id__": 37
+      "__id__": 39
     },
     "asset": {
       "__uuid__": "2bd663e7-b1c0-4c51-8875-50afc4523fe2"
@@ -1450,21 +1486,21 @@
     "_name": "FreezeTurret",
     "_objFlags": 0,
     "_parent": {
-      "__id__": 37
+      "__id__": 39
     },
     "_children": [],
     "_tag": -1,
     "_active": true,
     "_components": [
       {
-        "__id__": 44
+        "__id__": 46
       },
       {
-        "__id__": 45
+        "__id__": 47
       }
     ],
     "_prefab": {
-      "__id__": 47
+      "__id__": 49
     },
     "_id": "dbvqFDMH5Bro5F6xA2Jnk6",
     "_opacity": 255,
@@ -1507,7 +1543,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 43
+      "__id__": 45
     },
     "_enabled": true,
     "_spriteFrame": {
@@ -1533,7 +1569,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 43
+      "__id__": 45
     },
     "_enabled": true,
     "transition": 0,
@@ -1555,7 +1591,7 @@
     "zoomScale": 1.2,
     "clickEvents": [
       {
-        "__id__": 46
+        "__id__": 48
       }
     ],
     "_N$interactable": true,
@@ -1593,13 +1629,13 @@
       "__uuid__": "29158224-f8dd-4661-a796-1ffab537140e"
     },
     "_N$target": {
-      "__id__": 43
+      "__id__": 45
     }
   },
   {
     "__type__": "cc.ClickEvent",
     "target": {
-      "__id__": 37
+      "__id__": 39
     },
     "component": "Range",
     "handler": "createTower",
@@ -1608,7 +1644,7 @@
   {
     "__type__": "cc.PrefabInfo",
     "root": {
-      "__id__": 37
+      "__id__": 39
     },
     "asset": {
       "__uuid__": "2bd663e7-b1c0-4c51-8875-50afc4523fe2"
@@ -1621,21 +1657,21 @@
     "_name": "MachineGunTurret",
     "_objFlags": 0,
     "_parent": {
-      "__id__": 37
+      "__id__": 39
     },
     "_children": [],
     "_tag": -1,
     "_active": true,
     "_components": [
       {
-        "__id__": 49
+        "__id__": 51
       },
       {
-        "__id__": 50
+        "__id__": 52
       }
     ],
     "_prefab": {
-      "__id__": 52
+      "__id__": 54
     },
     "_id": "65Fk2z7iFFcZ5gRbFjlc9A",
     "_opacity": 255,
@@ -1678,7 +1714,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 48
+      "__id__": 50
     },
     "_enabled": true,
     "_spriteFrame": {
@@ -1704,7 +1740,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 48
+      "__id__": 50
     },
     "_enabled": true,
     "transition": 0,
@@ -1726,7 +1762,7 @@
     "zoomScale": 1.2,
     "clickEvents": [
       {
-        "__id__": 51
+        "__id__": 53
       }
     ],
     "_N$interactable": true,
@@ -1764,13 +1800,13 @@
       "__uuid__": "29158224-f8dd-4661-a796-1ffab537140e"
     },
     "_N$target": {
-      "__id__": 48
+      "__id__": 50
     }
   },
   {
     "__type__": "cc.ClickEvent",
     "target": {
-      "__id__": 37
+      "__id__": 39
     },
     "component": "Range",
     "handler": "createTower",
@@ -1779,7 +1815,7 @@
   {
     "__type__": "cc.PrefabInfo",
     "root": {
-      "__id__": 37
+      "__id__": 39
     },
     "asset": {
       "__uuid__": "2bd663e7-b1c0-4c51-8875-50afc4523fe2"
@@ -1792,7 +1828,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 37
+      "__id__": 39
     },
     "_enabled": true,
     "_spriteFrame": {
@@ -1818,14 +1854,14 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 37
+      "__id__": 39
     },
     "_enabled": true
   },
   {
     "__type__": "cc.PrefabInfo",
     "root": {
-      "__id__": 37
+      "__id__": 39
     },
     "asset": {
       "__uuid__": "2bd663e7-b1c0-4c51-8875-50afc4523fe2"
@@ -1841,7 +1877,7 @@
     },
     "_id": "c4bqhrCV5IkaN/viXMVrXt",
     "_prefab": {
-      "__id__": 57
+      "__id__": 59
     },
     "_name": "ground",
     "_active": true,
@@ -1858,7 +1894,7 @@
   {
     "__type__": "cc.PrefabInfo",
     "root": {
-      "__id__": 56
+      "__id__": 58
     },
     "asset": {
       "__uuid__": "5742cf0f-41c0-49dc-90db-1a5e7a8092eb"

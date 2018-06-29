@@ -10,5 +10,4 @@ export default class Range extends cc.Component {
         towerDispatch.setUserData(customEventData);
         this.node.dispatchEvent(towerDispatch);
     }
-
 }

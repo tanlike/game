@@ -57,7 +57,7 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": -242,
+      "x": 0,
       "y": 0
     },
     "_skewX": 0,
@@ -167,7 +167,12 @@
     "attckInterval": 1,
     "bullet": {
       "__uuid__": "d07ecc94-05b4-45c6-95af-8fa9cd14f350"
-    }
+    },
+    "levelUpRangePanel": {
+      "__uuid__": "f80b37b7-1f8b-4034-b487-2620aa5119c6"
+    },
+    "levelUpScore": 20,
+    "maxLevel": 5
   },
   {
     "__type__": "cc.PrefabInfo",

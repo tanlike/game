@@ -40,6 +40,11 @@ export default class Game extends cc.Component {
     public map: Array<cc.Node> = [];        //地图数组
     public mapHasTower: Array<boolean> = [];  //地图是否有塔数组
     public score : number = 40;                 //记录分数
+    private pauseBtnSpriteFrame: cc.SpriteFrame;        //暂停换图
+    public isPause: boolean = false;                   //暂停
+    public isGameOver: boolean = false;                //结束
+    public enemys: Array<cc.Node> = [];             //怪物列表
+    private wave:number;                        //刷怪波数
 
     public addScore(addScore: number){
         this.score += addScore;
@@ -62,21 +67,23 @@ export default class Game extends cc.Component {
         this.pauseBtnSpriteFrame = this.pauseBtn.normalSprite;
         this.addScore(0);
         this.addHp(0);
+        this.wave = -1;
     }
 
     start () {
         this.node.on("createrange",this.createRange,this);
         this.node.on("createtower",this.createTower,this);
+        //this.node.on(cc.Node.EventType.TOUCH_START,this.onTouch,this);
         this.schedule(this.addEnemys,30,cc.macro.REPEAT_FOREVER,1);
     }
 
     private reset(){
+        this.tower = [];      
+        this.isGameOver = false;                
+        this.enemys = [];             
         cc.director.loadScene("game");
+        cc.director.resume();
     }
-
-    private pauseBtnSpriteFrame: cc.SpriteFrame;
-    private isPause: boolean = false;
-    private isGameOver: boolean = false;
 
     private pauseGame(){
         if(this.isGameOver){
@@ -107,16 +114,13 @@ export default class Game extends cc.Component {
         }
     }
 
-    public enemys: Array<cc.Node> = [];
-    private wave:number = 0;
-
     private addEnemys(){
          this.schedule(function(){
             let enemy: cc.Node = cc.instantiate(this.enemy);
             enemy.getComponent("Enemy").maxHp = enemy.getComponent("Enemy").maxHp + this.wave;
             this.enemys.push(enemy);
             this.node.addChild(enemy);
-         },2,10);
+         },1,30);
          this.wave++;
     }
 
@@ -283,9 +287,20 @@ export default class Game extends cc.Component {
         }
     }
 
+    private onTouch(){
+        cc.log('舞台事件');
+        if(cc.isValid(this.curRange)){
+            this.clearOpacity();
+            this.mapHasTower[this.curIndex] = false;
+            this.curRange.destroy();
+        }
+    }
+
     private movePath: Array<Path> = [];
 
     private createRange(evt: cc.Event.EventCustom){
+        cc.log('地面事件');
+        evt.stopPropagationImmediate();
         if(this.isGameOver || this.isPause){
             return;
         }
@@ -339,7 +354,7 @@ export default class Game extends cc.Component {
         }
         let tower: cc.Node = cc.instantiate(target);
         this.tower[this.curIndex] = tower;
-        this.node.addChild(tower);
+        this.node.addChild(tower,500);
         tower.position = this.curRange.position;
         this.curRange.destroy();
         this.mapHasTower[this.curIndex] = true;

@@ -24,13 +24,13 @@ export class Utils{
     public static getIndexBy2dXY(x: number, y: number): number{     //根据当前坐标返回索引
         let point: cc.Vec2 = new cc.Vec2();
         for(let i = 0; i < 18; i++){
-            if(x < this.startX + i * this.width){
+            if(x < this.startX + i * this.width + this.width / 2){
                 point.x = i;
                 break;
             }
         }
         for(let i = 7; i > 0; i--){
-            if(y < this.startY - i * this.width){
+            if(y < this.startY - i * this.width + this.width / 2){
                 point.y = i;
                 break;
             }

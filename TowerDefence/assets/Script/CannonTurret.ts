@@ -12,14 +12,76 @@ export default class CannonTurret extends cc.Component {
     attckInterval: number = 0.3;
     @property(cc.Prefab)
     bullet: cc.Prefab = null;
+    @property(cc.Prefab)
+    levelUpRangePanel: cc.Prefab = null;
+    @property
+    public levelUpScore: number = 20;
+    @property
+    public maxLevel: number = 5;
 
     private game: Game;
     private target: cc.Node = null;
     private curtime: number = 0;
+    private curLevel: number = 1;
+    public index:number;
 
     onLoad () {
         this.game = cc.find("Canvas").getComponent("Game");
+        //this.node.on(cc.Node.EventType.TOUCH_START,this.levelUpRange,this);
     }
+
+    onDestroy(){
+        //this.node.on(cc.Node.EventType.TOUCH_START,this.levelUpRange,this);
+    }
+
+    private levelUpPanel: cc.Node;
+
+    private levelUpRange(){
+        if(this.game.isGameOver || this.game.isPause){
+            return;
+        }
+        if(cc.isValid(this.levelUpPanel)){
+            this.levelUpPanel.destroy();
+            return;
+        }
+        this.levelUpPanel = cc.instantiate(this.levelUpRangePanel);
+        this.levelUpPanel.getComponent("LevelUpPanle").index = 
+        this.node.parent.addChild(this.levelUpPanel);
+        this.levelUpPanel.setPosition(this.node.position);
+    }
+
+    private levelUpRangeHandle(evt: cc.Event.EventCustom){
+        cc.log(evt.target);
+        let type = evt.getUserData();
+        if(type == 1){
+            this.levelUp(evt.target);
+        }else if(type == 2){
+            this.cancelTower(evt.target);
+        }
+        evt.target.destroy();
+    }
+
+    private levelUp(target){
+        if(this.curLevel < this.maxLevel){
+            if(this.game.score > this.levelUpScore){
+                this.curLevel++;
+                this.game.addScore(-this.levelUpScore);
+                this.attack += 2;
+                cc.log('塔升级');
+            }
+        }
+    }
+
+    private cancelTower(target){
+        cc.log('销毁塔');
+        let score = Math.floor((this.game.needScore + this.levelUpScore * (this.curLevel - 1)) / 2);
+        this.game.addScore(score);
+        let index = this.game.tower.indexOf(target);
+        this.game.tower.splice(index,1);
+        this.game.mapHasTower[index] = false;
+        this.game.tower[index].destroy();
+    }
+
 
     private findTarget(): cc.Node{
         for(let enemy of this.game.enemys){
@@ -32,12 +94,9 @@ export default class CannonTurret extends cc.Component {
     }
 
     private getRotation(): number{
-        let sp = this.target.convertToWorldSpaceAR(this.target.getPosition());
-        let pos = this.node.convertToWorldSpaceAR(this.node.getPosition());
-        let truePos = cc.p(sp.x - pos.x, sp.y - pos.y);
-        let radian = cc.pAngleSigned(truePos,cc.p(1,0));
-        let angle = cc.radiansToDegrees(radian) + 360;
-        //cc.log('angle=' + angle);
+        let dir = cc.pNormalize(cc.pSub(this.target.position,this.node.position));
+        let radian = cc.pAngleSigned(dir,cc.p(1,0));
+        let angle = cc.radiansToDegrees(radian);
         return angle;
     }
 
@@ -45,14 +104,14 @@ export default class CannonTurret extends cc.Component {
         this.curtime += dt;
         if(this.target == null){
             this.target = this.findTarget();
-           // cc.log('找到一个新目标=' + this.target);
+            //cc.log('找到一个新目标=' + this.target);
         }
         if(this.target != null){
             if(cc.isValid(this.target)){
-                this.node.runAction(cc.rotateTo(dt,this.getRotation()));
+                //cc.log(this.target.uuid + ',旋转角度=' + this.getRotation());
+                this.node.rotation = this.getRotation();
+                //cc.log(this.node.rotation);
                 if(this.curtime > this.attckInterval){
-                   // cc.log('对目标发起攻击');
-                    this.shoot();
                     this.target.getComponent("Enemy").hurt(this.attack);
                     this.curtime = 0;
                 }else{
@@ -66,16 +125,4 @@ export default class CannonTurret extends cc.Component {
         }
     }
 
-    private shoot(){
-        // let bullet = cc.instantiate(this.bullet);
-        // let bulletPosition: cc.Node = this.node.getChildByName("bulletPosition");
-        // bullet.setPosition(bulletPosition.position);
-        // bullet.rotation = this.node.rotation;
-        // if(this.node.parent){
-        //     this.node.addChild(bullet);
-        // }
-        // bullet.runAction(cc.sequence(cc.moveTo(1,this.node.convertToNodeSpace(this.target.position)),cc.callFunc(function(){
-        //     bullet.destroy();
-        // })));
-    }
 }
