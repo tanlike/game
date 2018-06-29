@@ -14,8 +14,8 @@ export default class Ground extends cc.Component {
         this.node.off(cc.Node.EventType.TOUCH_START,this.createRange,this);
     }
  
-    private createRange(){
-        //cc.log('点击地面');
+    private createRange(evt: cc.Event.EventCustom){
+        evt.stopPropagation();
         let createEvent: cc.Event.EventCustom = new cc.Event.EventCustom('createrange',true)
         createEvent.setUserData({index: this.index,node: this.node});
         this.node.dispatchEvent(createEvent);

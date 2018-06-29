@@ -934,6 +934,9 @@
     },
     "pausePanel": {
       "__id__": 20
+    },
+    "levelUpRangePanel": {
+      "__uuid__": "f80b37b7-1f8b-4034-b487-2620aa5119c6"
     }
   },
   {

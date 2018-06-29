@@ -35,8 +35,9 @@ export default class Game extends cc.Component {
     gameOverPanel: cc.Node = null;
     @property(cc.Node)
     pausePanel: cc.Node = null;
+    @property(cc.Prefab)
+    levelUpRangePanel: cc.Prefab = null;
 
-    public tower: Array<cc.Node> = [];      //塔数组
     public map: Array<cc.Node> = [];        //地图数组
     public mapHasTower: Array<boolean> = [];  //地图是否有塔数组
     public score : number = 40;                 //记录分数
@@ -73,12 +74,13 @@ export default class Game extends cc.Component {
     start () {
         this.node.on("createrange",this.createRange,this);
         this.node.on("createtower",this.createTower,this);
+        this.node.on("createtoweruprange",this.createTowerUpRange,this);
+        this.node.on(cc.Node.EventType.TOUCH_START,this.onTouch,this);
         //this.node.on(cc.Node.EventType.TOUCH_START,this.onTouch,this);
         this.schedule(this.addEnemys,30,cc.macro.REPEAT_FOREVER,1);
     }
 
     private reset(){
-        this.tower = [];      
         this.isGameOver = false;                
         this.enemys = [];             
         cc.director.loadScene("game");
@@ -218,17 +220,17 @@ export default class Game extends cc.Component {
         }
         way.reverse();
         //cc.log('----------------------------------------------');
-        for(let value of way){
-            this.map[value.index].opacity = 100;
-        }
+        // for(let value of way){
+        //     this.map[value.index].opacity = 100;
+        // }
         return way;
     }
 
-    private clearOpacity(){
-        this.map.forEach(value =>{
-            value.opacity = 255;
-        })
-    }
+    // private clearOpacity(){
+    // //     this.map.forEach(value =>{
+    // //         value.opacity = 255;
+    // //     })
+    // // }
 
     private pathNode: Array<Path> = [];
 
@@ -240,7 +242,7 @@ export default class Game extends cc.Component {
         this.pathNode[startIndex] = startPath;
         openList.push(startPath);
         let rel:boolean = true;
-        this.clearOpacity();
+        // this.clearOpacity();
         while(rel){
             if(openList.length == 0){
                 // cc.log('找不到通路');
@@ -288,44 +290,52 @@ export default class Game extends cc.Component {
     }
 
     private onTouch(){
-        cc.log('舞台事件');
         if(cc.isValid(this.curRange)){
-            this.clearOpacity();
-            this.mapHasTower[this.curIndex] = false;
+            //this.clearOpacity();
             this.curRange.destroy();
+        }
+        if(cc.isValid(this.curTowerUpRange)){
+            this.curTowerUpRange.destroy();
         }
     }
 
-    private movePath: Array<Path> = [];
+    private curTowerUpRange: cc.Node;
 
-    private createRange(evt: cc.Event.EventCustom){
-        cc.log('地面事件');
-        evt.stopPropagationImmediate();
+    private createTowerUpRange(evt: cc.Event.EventCustom){
         if(this.isGameOver || this.isPause){
             return;
         }
+        this.curTowerUpRange = cc.instantiate(this.levelUpRangePanel);
+        this.node.addChild(this.curTowerUpRange,998);
+        let index = evt.getUserData().index;
+        let node = evt.getUserData().node;
+        this.curTowerUpRange.getComponent("LevelUpPanel").index = index;
+        this.curTowerUpRange.getComponent("LevelUpPanel").tower = node;
+        let position = node.position;
+        this.curTowerUpRange.setPosition(position);
+    }
+
+    private createRange(evt: cc.Event.EventCustom){
+        if(this.isGameOver || this.isPause){
+            return;
+        }
+        //this.clearOpacity();
         let index: number = evt.getUserData().index;
         if(cc.isValid(this.curRange)){
             // cc.log('取消路径');
-            this.clearOpacity();
-            this.mapHasTower[this.curIndex] = false;
             this.curRange.destroy();
-            return null;
         }
         if(index == this.startIndex || index == this.endIndex){
             // cc.log('起点和终点不能建塔');
-            return null;
+            return;
         }
         if(this.mapHasTower[index]){
             // cc.log('当前位置已经建塔');
-            return null;
-        }
-        this.mapHasTower[index] = true;
-        this.movePath = this.getPath(this.startIndex);
-        if(this.movePath == null){
-            this.mapHasTower[index] = false;
             return;
         }
+        this.mapHasTower[index] = true;
+        this.getPath(this.startIndex);
+        this.mapHasTower[index] = false;
         // cc.log(this.curIndex + '=' + this.mapHasTower[this.curIndex]);
         // cc.log(index + '=' + this.mapHasTower[index]);
         let position: cc.Vec2 = evt.getUserData().node.position;
@@ -353,8 +363,8 @@ export default class Game extends cc.Component {
             target = this.machineGunTurrent;
         }
         let tower: cc.Node = cc.instantiate(target);
-        this.tower[this.curIndex] = tower;
         this.node.addChild(tower,500);
+        tower.getComponent("CannonTurret").init();
         tower.position = this.curRange.position;
         this.curRange.destroy();
         this.mapHasTower[this.curIndex] = true;

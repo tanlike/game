@@ -227,7 +227,7 @@
       "__id__": 1
     },
     "component": "LevelUpPanel",
-    "handler": "onClick",
+    "handler": "levelUpRangeHandle",
     "customEventData": "1"
   },
   {
@@ -398,7 +398,7 @@
       "__id__": 1
     },
     "component": "LevelUpPanel",
-    "handler": "onClick",
+    "handler": "levelUpRangeHandle",
     "customEventData": "2"
   },
   {
