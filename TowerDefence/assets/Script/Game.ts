@@ -364,7 +364,7 @@ export default class Game extends cc.Component {
         }
         let tower: cc.Node = cc.instantiate(target);
         this.node.addChild(tower,500);
-        tower.getComponent("CannonTurret").init();
+        tower.getComponent("CannonTurret").init(this.curIndex);
         tower.position = this.curRange.position;
         this.curRange.destroy();
         this.mapHasTower[this.curIndex] = true;

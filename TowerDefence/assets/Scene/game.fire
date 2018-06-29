@@ -936,7 +936,7 @@
       "__id__": 20
     },
     "levelUpRangePanel": {
-      "__uuid__": "f80b37b7-1f8b-4034-b487-2620aa5119c6"
+      "__uuid__": "284a0393-cc43-4f30-bde8-97272ffeb8b5"
     }
   },
   {
@@ -1025,7 +1025,7 @@
     "_prefab": {
       "__id__": 26
     },
-    "_name": "leveUpPanel",
+    "_name": "levelUpPanel",
     "_active": true,
     "_position": {
       "__type__": "cc.Vec2",
@@ -1043,7 +1043,7 @@
       "__id__": 25
     },
     "asset": {
-      "__uuid__": "f80b37b7-1f8b-4034-b487-2620aa5119c6"
+      "__uuid__": "284a0393-cc43-4f30-bde8-97272ffeb8b5"
     },
     "fileId": "01ejlJaWFL85cB9BawuS9x",
     "sync": true

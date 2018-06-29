@@ -10,7 +10,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "leveUpPanel",
+    "_name": "levelUpPanel",
     "_objFlags": 0,
     "_parent": null,
     "_children": [
@@ -236,9 +236,9 @@
       "__id__": 1
     },
     "asset": {
-      "__uuid__": "f80b37b7-1f8b-4034-b487-2620aa5119c6"
+      "__id__": 0
     },
-    "fileId": "97zLlu6uRB8ap/0t+rTYRf",
+    "fileId": "8bFUXSDCNC+Z1Hg8QRR+jX",
     "sync": false
   },
   {
@@ -407,9 +407,9 @@
       "__id__": 1
     },
     "asset": {
-      "__uuid__": "f80b37b7-1f8b-4034-b487-2620aa5119c6"
+      "__id__": 0
     },
-    "fileId": "609A0skINMN64IHXfCvw43",
+    "fileId": "449BKt3o1J2Y7Wo2chbf8J",
     "sync": false
   },
   {
@@ -453,7 +453,7 @@
       "__id__": 1
     },
     "asset": {
-      "__uuid__": "f80b37b7-1f8b-4034-b487-2620aa5119c6"
+      "__id__": 0
     },
     "fileId": "01ejlJaWFL85cB9BawuS9x",
     "sync": false
