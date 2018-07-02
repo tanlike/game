@@ -1095,8 +1095,8 @@
     "_active": true,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
+      "x": 151,
+      "y": 290
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -1128,8 +1128,8 @@
     "_active": true,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
+      "x": 177,
+      "y": 124
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -1161,8 +1161,8 @@
     "_active": true,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
+      "x": 89,
+      "y": 180
     },
     "_rotationX": 0,
     "_rotationY": 0,

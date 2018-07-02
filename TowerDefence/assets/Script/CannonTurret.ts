@@ -36,12 +36,12 @@ export default class CannonTurret extends cc.Component {
         this.node.on(cc.Node.EventType.TOUCH_START,this.levelUpRange,this);
     }
 
-    private levelUpRange(){
+    private levelUpRange(evt: cc.Event.EventCustom){
+        evt.stopPropagation();
         if(this.game.isGameOver || this.game.isPause){
             return;
         }
         let createEvent: cc.Event.EventCustom = new cc.Event.EventCustom('createtoweruprange',true)
-        createEvent.setUserData({index: this.index,node: this.node});
         this.node.dispatchEvent(createEvent);
     }
 

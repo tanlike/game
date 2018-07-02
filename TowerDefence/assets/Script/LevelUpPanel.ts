@@ -1,11 +1,11 @@
 import Game from './Game';
+import CannonTurret from './CannonTurret';
 const {ccclass, property} = cc._decorator;
 
 @ccclass
 export class LevelUpPanel extends cc.Component {
 
-    private index: number;
-    private tower: cc.Node;
+    private tower: CannonTurret;
     private game: Game;
 
     onLoad(){
@@ -22,34 +22,31 @@ export class LevelUpPanel extends cc.Component {
         this.node.off(cc.Node.EventType.TOUCH_START,this.onTouch,this);
     }
 
-    private levelUpRangeHandle(evt: cc.Event.EventCustom){
-        let type = evt.getUserData();
-        if(type == 1){
+    private levelUpRangeHandle(evt, customEventData){
+        if(customEventData == 1){
             this.levelUp(evt.target);
-        }else if(type == 2){
+        }else if(customEventData == 2){
             this.cancelTower(evt.target);
         }
-        evt.target.destroy();
+        this.node.destroy();
     }
 
     private levelUp(target){
-        let towerScript = this.tower.getComponent("CannoTurret");
+        let towerScript = this.tower.getComponent("CannonTurret");
         if(towerScript.curLevel < towerScript.maxLevel){
-            if(this.game.score > towerScript.levelUpScore){
+            if(this.game.score >= towerScript.levelUpScore){
                 towerScript.curLevel++;
                 this.game.addScore(-towerScript.levelUpScore);
                 towerScript.attack += 2;
-                cc.log('塔升级');
             }
         }
     }
 
     private cancelTower(target){
-        cc.log('销毁塔');
-        let towerScript = this.tower.getComponent("CannoTurret");
+        let towerScript = this.tower.getComponent("CannonTurret");
         let score = Math.floor((this.game.needScore + towerScript.levelUpScore * (towerScript.curLevel - 1)) / 2);
         this.game.addScore(score);
-        this.game.mapHasTower[this.index] = false;
+        this.game.mapHasTower[towerScript.index] = false;
         this.tower.destroy();
     }
 }

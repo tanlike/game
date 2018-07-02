@@ -1,5 +1,6 @@
 import { Path } from "./Path";
 import { Utils } from './Utils';
+import CannonTurret from "./CannonTurret";
 
 const {ccclass, property} = cc._decorator;
 
@@ -14,6 +15,7 @@ export default class Game extends cc.Component {
     machineGunTurrent: cc.Prefab = null;
 
     @property(cc.Prefab)
+     
     enemy: cc.Prefab = null;
     @property(cc.Prefab)
     ground: cc.Prefab = null;
@@ -76,7 +78,6 @@ export default class Game extends cc.Component {
         this.node.on("createtower",this.createTower,this);
         this.node.on("createtoweruprange",this.createTowerUpRange,this);
         this.node.on(cc.Node.EventType.TOUCH_START,this.onTouch,this);
-        //this.node.on(cc.Node.EventType.TOUCH_START,this.onTouch,this);
         this.schedule(this.addEnemys,30,cc.macro.REPEAT_FOREVER,1);
     }
 
@@ -305,14 +306,11 @@ export default class Game extends cc.Component {
         if(this.isGameOver || this.isPause){
             return;
         }
+        this.onTouch();
         this.curTowerUpRange = cc.instantiate(this.levelUpRangePanel);
-        this.node.addChild(this.curTowerUpRange,998);
-        let index = evt.getUserData().index;
-        let node = evt.getUserData().node;
-        this.curTowerUpRange.getComponent("LevelUpPanel").index = index;
-        this.curTowerUpRange.getComponent("LevelUpPanel").tower = node;
-        let position = node.position;
-        this.curTowerUpRange.setPosition(position);
+        this.node.addChild(this.curTowerUpRange,1000);
+        this.curTowerUpRange.position = evt.target.position;
+        this.curTowerUpRange.getComponent("LevelUpPanel").tower = evt.target;
     }
 
     private createRange(evt: cc.Event.EventCustom){
@@ -321,10 +319,7 @@ export default class Game extends cc.Component {
         }
         //this.clearOpacity();
         let index: number = evt.getUserData().index;
-        if(cc.isValid(this.curRange)){
-            // cc.log('取消路径');
-            this.curRange.destroy();
-        }
+        this.onTouch();
         if(index == this.startIndex || index == this.endIndex){
             // cc.log('起点和终点不能建塔');
             return;
