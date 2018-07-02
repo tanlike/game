@@ -16,6 +16,10 @@ export default class CannonTurret extends cc.Component {
     public levelUpScore: number = 20;
     @property
     public maxLevel: number = 5;
+    @property(cc.Sprite)
+    tower: cc.Sprite = null;    
+    @property(cc.Label)
+    lv: cc.Label = null;
 
     private game: Game;
     private target: cc.Node = null;
@@ -27,13 +31,17 @@ export default class CannonTurret extends cc.Component {
         this.index = index;
     }
 
+    public setLevel(level: number){
+        this.lv.string = 'lv:' + this.curLevel;
+    }
+
     onLoad () {
         this.game = cc.find("Canvas").getComponent("Game");
-        this.node.on(cc.Node.EventType.TOUCH_START,this.levelUpRange,this);
+        this.tower.node.on(cc.Node.EventType.TOUCH_START,this.levelUpRange,this);
     }
 
     onDestroy(){
-        this.node.on(cc.Node.EventType.TOUCH_START,this.levelUpRange,this);
+        //this.tower.node.off(cc.Node.EventType.TOUCH_START,this.levelUpRange,this);
     }
 
     private levelUpRange(evt: cc.Event.EventCustom){
@@ -71,7 +79,7 @@ export default class CannonTurret extends cc.Component {
         if(this.target != null){
             if(cc.isValid(this.target)){
                 //cc.log(this.target.uuid + ',旋转角度=' + this.getRotation());
-                this.node.rotation = this.getRotation();
+                this.tower.node.rotation = this.getRotation();
                 //cc.log(this.node.rotation);
                 if(this.curtime > this.attckInterval){
                     this.target.getComponent("Enemy").hurt(this.attack);

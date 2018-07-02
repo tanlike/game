@@ -36,6 +36,7 @@ export class LevelUpPanel extends cc.Component {
         if(towerScript.curLevel < towerScript.maxLevel){
             if(this.game.score >= towerScript.levelUpScore){
                 towerScript.curLevel++;
+                towerScript.setLevel(towerScript.curLevel);
                 this.game.addScore(-towerScript.levelUpScore);
                 towerScript.attack += 2;
             }
