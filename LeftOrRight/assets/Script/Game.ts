@@ -11,10 +11,12 @@ export default class Game extends cc.Component {
     enemy: cc.Prefab = null;
     @property(cc.Label)
     timeLabel: cc.Label = null;
+    @property(cc.Node)
+    gameOverPanel: cc.Node = null;
 
     onLoad () {
         this.node.on(cc.Node.EventType.TOUCH_START,this.onTouch,this);
-        this.node.on("gameover",this.gameOver,this);
+        this.node.on("gameover",this.showGameOverPanel,this);
         this.schedule(this.addEnemy,10,this.maxEnemyNum - this.enemyNum - 1);
     }
 
@@ -40,20 +42,26 @@ export default class Game extends cc.Component {
     private addEnemy(){
         let e: cc.Node = cc.instantiate(this.enemy);
         this.node.addChild(e);
-        e.setPosition(cc.p(200 + 100 * cc.randomMinus1To1(),155));
+        let p: cc.Vec2 = this.rightPlayer.node.parent.convertToWorldSpaceAR(this.rightPlayer.node.position);
+        p = this.node.convertToNodeSpaceAR(p);
+        e.setPosition(cc.p(p.x + 150 * cc.randomMinus1To1(),p.y + 150));
     }
 
     private onTouch(evt: cc.Event.EventTouch){
+        let touchs = evt.getTouches();
         if(evt.getLocation().x <= this.node.width / 2){
             this.leftTouch();
         }else{
-            this.touchId = evt.getID();
+            this.touchId = touchs[0].getID();
             this.rightTouch();
+            console.log('touch start=' + touchs[0].getID());
         }
     }
 
     private leftTouch(){
-        this.leftPlayer.node.getComponent("LeftPlayer").jump();
+        if(cc.isValid(this.leftPlayer)){
+            this.leftPlayer.node.getComponent("LeftPlayer").jump();
+        }
     }
 
     private rightTouch(){
@@ -64,7 +72,6 @@ export default class Game extends cc.Component {
     private touchId: number;
 
     private onMove(evt: cc.Event.EventTouch){
-        this.touchId = evt.getID();
         let p: cc.Vec2 = evt.getLocation();
         let preP: cc.Vec2 = evt.getPreviousLocation();
         if(cc.isValid(this.rightPlayer.node)){
@@ -73,16 +80,22 @@ export default class Game extends cc.Component {
     }
 
     private onEnd(evt: cc.Event.EventTouch){
-        cc.log('----------------------------------------');
-        cc.log(evt.getID() + ',' + this.touchId);
-        if(evt.getID() == this.touchId)
+        let touchs = evt.getTouches();
+        console.log('touch end=' + touchs[0].getID());
+        if(touchs[0].getID() == this.touchId)
         {
             cc.log('取消touch移动');
             this.node.off(cc.Node.EventType.TOUCH_MOVE,this.onMove,this);
         }
     }
 
+    private showGameOverPanel(){
+        cc.director.pause();
+        this.gameOverPanel.active = true;
+    }
+
     private gameOver(){
         cc.director.loadScene("game");
+        cc.director.resume();
     }
 }
