@@ -27,7 +27,7 @@ export  class LeftPlayer extends cc.Component {
     }
 
     update(dt){
-        this.speed = cc.pAdd(this.speed,cc.pMult(this.gravity,dt));
-        this.node.y += this.speed.y * dt;
+        //this.speed = cc.pAdd(this.speed,cc.pMult(this.gravity,dt));
+        //this.node.y += this.speed.y * dt;
     }
 }

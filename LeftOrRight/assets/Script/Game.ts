@@ -72,19 +72,20 @@ export default class Game extends cc.Component {
     private touchId: number;
 
     private onMove(evt: cc.Event.EventTouch){
+        //cc.log('touch move');
         let p: cc.Vec2 = evt.getLocation();
         let preP: cc.Vec2 = evt.getPreviousLocation();
         if(cc.isValid(this.rightPlayer.node)){
-            this.rightPlayer.node.setPosition(cc.pAdd(this.rightPlayer.node.position,cc.pSub(p,preP)));
+            this.rightPlayer.node.getComponent("RightPlayer").touchMove = cc.pSub(p,preP);
         }
     }
 
     private onEnd(evt: cc.Event.EventTouch){
         let touchs = evt.getTouches();
-        console.log('touch end=' + touchs[0].getID());
+        //console.log('touch end=' + touchs[0].getID());
         if(touchs[0].getID() == this.touchId)
         {
-            cc.log('取消touch移动');
+            //cc.log('取消touch移动');
             this.node.off(cc.Node.EventType.TOUCH_MOVE,this.onMove,this);
         }
     }
@@ -95,7 +96,7 @@ export default class Game extends cc.Component {
     }
 
     private gameOver(){
-        cc.director.loadScene("game");
         cc.director.resume();
+        cc.director.loadScene("game");
     }
 }
