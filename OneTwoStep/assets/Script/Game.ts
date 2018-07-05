@@ -42,7 +42,9 @@ export default class Game extends cc.Component {
         let finished = cc.callFunc(this.showGameOverPanel,this);
         this.hero.runAction(cc.sequence(jump,finished));
         this.index += step;
-        this.map.getComponent("Map").canCreate(this.index);
+        for(let i = 0; i < step; i++){
+            this.map.getComponent("Map").canCreate(this.index);
+        }
     }
 
     private showGameOverPanel(){
