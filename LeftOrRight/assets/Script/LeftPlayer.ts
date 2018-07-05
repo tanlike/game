@@ -6,9 +6,9 @@ const {ccclass, property} = cc._decorator;
 export  class LeftPlayer extends cc.Component {
 
     @property(cc.Vec2)
-    gravity: cc.Vec2 = cc.p(0,-200);
+    gravity: cc.Vec2 = cc.p(0,-300);
     @property(cc.Vec2)
-    public jumpSpeed: cc.Vec2 = cc.p(0,200);
+    public jumpSpeed: cc.Vec2 = cc.p(0,300);
 
     onLoad(){
         cc.director.getCollisionManager().enabled = true;
@@ -27,7 +27,7 @@ export  class LeftPlayer extends cc.Component {
     }
 
     update(dt){
-        //this.speed = cc.pAdd(this.speed,cc.pMult(this.gravity,dt));
-        //this.node.y += this.speed.y * dt;
+        this.speed = cc.pAdd(this.speed,cc.pMult(this.gravity,dt));
+        this.node.y += this.speed.y * dt;
     }
 }

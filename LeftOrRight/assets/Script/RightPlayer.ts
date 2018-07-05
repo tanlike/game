@@ -5,7 +5,8 @@ const {ccclass, property} = cc._decorator;
 export class RightPlayer extends cc.Component {
 
     public touchMove: cc.Vec2;
-    private touchDir: string;
+    @property
+    speed: number = 0;
 
     onLoad () {
         cc.director.getCollisionManager().enabled = true;
@@ -22,7 +23,7 @@ export class RightPlayer extends cc.Component {
     }
 
     update (dt) {
-        let p: cc.Vec2 = cc.pAdd(this.touchMove,this.node.position);
+        let p: cc.Vec2 = cc.pAdd(cc.pMult(this.touchMove,this.speed),this.node.position);
         let leftX = -399 + 5;
         let rightX = -37 - 5;
         let topY = 201 - 5;
@@ -40,5 +41,6 @@ export class RightPlayer extends cc.Component {
             p.y = bottomY;
         }
         this.node.setPosition(p);
+        this.touchMove = cc.p(0,0);
     }
 }

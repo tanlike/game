@@ -72,11 +72,13 @@ export default class Game extends cc.Component {
     private touchId: number;
 
     private onMove(evt: cc.Event.EventTouch){
-        //cc.log('touch move');
-        let p: cc.Vec2 = evt.getLocation();
-        let preP: cc.Vec2 = evt.getPreviousLocation();
-        if(cc.isValid(this.rightPlayer.node)){
-            this.rightPlayer.node.getComponent("RightPlayer").touchMove = cc.pSub(p,preP);
+        if(evt.getLocation().x >= this.node.width / 2)
+        {
+            let p: cc.Vec2 = evt.getLocation();
+            let preP: cc.Vec2 = evt.getPreviousLocation();
+            if(cc.isValid(this.rightPlayer.node)){
+                this.rightPlayer.node.getComponent("RightPlayer").touchMove = cc.pSub(p,preP);
+            }
         }
     }
 
