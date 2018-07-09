@@ -12,7 +12,7 @@ export default class Map extends cc.Component {
     twoPro: number = 0.4;
 
     public walls: Array<cc.Node> = [];
-    private maxCount: number = 100;
+    private maxCount: number = 50;
     private bornX: number = 10;
     private lastWall: cc.Node = null;
 
@@ -49,7 +49,6 @@ export default class Map extends cc.Component {
         this.indexs[7] = 9;
         this.indexs[8] = 10;
 
-        cc.log(this.walls[0].position);
     }
 
     onDisable(){

@@ -49,21 +49,23 @@ export default class Game extends cc.Component {
         let finished: cc.ActionInstant;
         if(step == 1){
             jumpToY = Global.addHeight;
-            if(this.wall.indexs.indexOf(this.index + 1) > 0){
+            if(this.wall.indexs.indexOf(this.index + 1) > -1){
                 finished = cc.callFunc(this.seccess,this,step);
             }else{
                 finished = cc.callFunc(this.faild,this);
+                //cc.log('为什么失败了=' + (this.index + 1));
             }
         }else if(step == 2){
-            if(this.wall.indexs.indexOf(this.index + 1) > 0){
+            if(this.wall.indexs.indexOf(this.index + 1) > -1){
                 jumpToY = Global.addHeight * 2;
             }else{
                 jumpToY = Global.addHeight;
             }
-            if(this.wall.indexs.indexOf(this.index + 2) > 0){
+            if(this.wall.indexs.indexOf(this.index + 2) > -1){
                 finished = cc.callFunc(this.seccess,this,step);
             }else{
                 finished = cc.callFunc(this.faild,this);
+                //cc.log('为什么失败了=' + (this.index + 2));
             }
         }
         jumpAction = cc.jumpTo(0.3,cc.pAdd(this.hero.position,cc.p(Global.addWidth * step,jumpToY)),jumpToY,1);
@@ -72,10 +74,20 @@ export default class Game extends cc.Component {
     }
 
     private resolve(index: number){
-        let i = this.wall.indexs.indexOf(index);
-        this.wall.indexs[i] = Infinity;
-        if(this.index === index){
-            this.wall.walls[i].destroy();
+        //cc.log('-----------------------');
+        let cur: number;
+        for(let i = 0; i < this.wall.indexs.length; i++){
+            if(this.wall.indexs[i] < index - 2){
+                cc.log('回收=' + i + ',位置=' + this.wall.indexs[i]);
+                this.wall.indexs[i] = Infinity;
+            }
+            if(this.wall.indexs[i] === index){
+                cur = i;
+            }
+        }
+        //cc.log('索引=' + index + ',当前位置=' + this.index);
+        if(this.index === index && this.isClick){
+            this.wall.walls[cur].destroy();
             this.faild();
         }
     }
@@ -91,7 +103,7 @@ export default class Game extends cc.Component {
         sub = sub > this.maxlv ? this.maxlv : sub;
         this.showLevel(sub);
         let curDuration = this.initDruration - sub * 0.15;
-        cc.log('curDuration=' + curDuration);
+        // cc.log('curDuration=' + curDuration);
         this.scheduleOnce(() => this.resolve(pos),curDuration);
         this.index = pos;
     }
